@@ -1,0 +1,17 @@
+{
+  "name": "code-copy-race",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:server": "bun run server/index.ts",
+    "dev:client": "cd client && bun run dev",
+    "dev": "bunx concurrently -n server,client -c \"blue.bold\",\"magenta.bold\" \"bun run dev:server\" \"bun run dev:client\""
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "bun-types": "^1.0.11",
+    "concurrently": "^8.2.2",
+    "typescript": "^5.6.3"
+  }
+}
