@@ -91,16 +91,13 @@ const CONTROL_KEYS: Record<ControlType, React.ReactNode> = {
 export function KDBGameControl({ type }: { type: ControlType }) {
   const isMac =
     typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.userAgent)
-  const mod = isMac ? <CommandIcon size={12} /> : "Ctrl"
+  const mod = isMac ? <CommandIcon className="size-3" /> : <span className="font-sans text-xs">Ctrl</span>
   const key = CONTROL_KEYS[type]
-  const isEnter = type === "next-game"
 
   return (
     <Kbd>
       <span className="font-sans text-xs">{mod}</span>
-      <span className={cn(
-        isEnter ? "text-base" : "text-xs"
-      )}>{key}</span>
+      <span className="text-xs">{key}</span>
     </Kbd>
   )
 }

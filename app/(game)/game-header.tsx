@@ -139,7 +139,7 @@ function DifficultySelections({
             onClick={() => onChange(d)}
             key={d}
           >
-            {d}
+            {d.charAt(0).toUpperCase() + d.slice(1)}
           </Button>
         ))}
       </div>

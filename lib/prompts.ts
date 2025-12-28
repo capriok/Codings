@@ -1,6 +1,7 @@
 import type { Prompt } from "@/lib/types"
 
 export const PROMPTS: Prompt[] = [
+  // 1-line easy
   {
     id: "1-easy-0",
     language: "ts",
@@ -16,11 +17,34 @@ export const PROMPTS: Prompt[] = [
     code: `const ok = true`,
   },
   {
+    id: "1-easy-2",
+    language: "ts",
+    difficulty: "easy",
+    lines: 1,
+    code: `const name = "Alice"`,
+  },
+  {
+    id: "1-easy-3",
+    language: "ts",
+    difficulty: "easy",
+    lines: 1,
+    code: `const items: string[] = []`,
+  },
+  {
+    id: "1-easy-4",
+    language: "ts",
+    difficulty: "easy",
+    lines: 1,
+    code: `let isLoading = false`,
+  },
+
+  // 1-line medium
+  {
     id: "1-medium-0",
     language: "ts",
     difficulty: "medium",
     lines: 1,
-    code: `const slug = "Hello World".trim().toLowerCase().replace(/\s+/g, "-")`,
+    code: `const slug = "Hello World".trim().toLowerCase().replace(/\\s+/g, "-")`,
   },
   {
     id: "1-medium-1",
@@ -29,6 +53,29 @@ export const PROMPTS: Prompt[] = [
     lines: 1,
     code: `const n = Number.parseInt("42", 10)`,
   },
+  {
+    id: "1-medium-2",
+    language: "ts",
+    difficulty: "medium",
+    lines: 1,
+    code: `const ids = users.map((u) => u.id)`,
+  },
+  {
+    id: "1-medium-3",
+    language: "ts",
+    difficulty: "medium",
+    lines: 1,
+    code: `const first = items.find((x) => x.active) ?? null`,
+  },
+  {
+    id: "1-medium-4",
+    language: "ts",
+    difficulty: "medium",
+    lines: 1,
+    code: `const [count, setCount] = useState(0)`,
+  },
+
+  // 1-line hard
   {
     id: "1-hard-0",
     language: "ts",
@@ -43,7 +90,29 @@ export const PROMPTS: Prompt[] = [
     lines: 1,
     code: `const hex = (n: number) => n.toString(16).padStart(2, "0")`,
   },
+  {
+    id: "1-hard-2",
+    language: "ts",
+    difficulty: "hard",
+    lines: 1,
+    code: `type Props = { children: React.ReactNode }`,
+  },
+  {
+    id: "1-hard-3",
+    language: "ts",
+    difficulty: "hard",
+    lines: 1,
+    code: `const pick = <T, K extends keyof T>(obj: T, key: K): T[K] => obj[key]`,
+  },
+  {
+    id: "1-hard-4",
+    language: "ts",
+    difficulty: "hard",
+    lines: 1,
+    code: `const assert = (cond: unknown): asserts cond => { if (!cond) throw Error() }`,
+  },
 
+  // 2-line easy
   {
     id: "2-easy-0",
     language: "ts",
@@ -59,6 +128,29 @@ export const PROMPTS: Prompt[] = [
     code: `const xs = [1, 2, 3]\nconsole.log(xs.length)`,
   },
   {
+    id: "2-easy-2",
+    language: "ts",
+    difficulty: "easy",
+    lines: 2,
+    code: `const name = "world"\nconsole.log(\`Hello, \${name}!\`)`,
+  },
+  {
+    id: "2-easy-3",
+    language: "ts",
+    difficulty: "easy",
+    lines: 2,
+    code: `const nums = [1, 2, 3]\nconst doubled = nums.map((n) => n * 2)`,
+  },
+  {
+    id: "2-easy-4",
+    language: "ts",
+    difficulty: "easy",
+    lines: 2,
+    code: `const a = 10\nconst b = a + 5`,
+  },
+
+  // 2-line medium
+  {
     id: "2-medium-0",
     language: "ts",
     difficulty: "medium",
@@ -70,8 +162,31 @@ export const PROMPTS: Prompt[] = [
     language: "ts",
     difficulty: "medium",
     lines: 2,
-    code: `const words = "a b  c".trim().split(/\s+/)\nconsole.log(words.join(","))`,
+    code: `const words = "a b  c".trim().split(/\\s+/)\nconsole.log(words.join(","))`,
   },
+  {
+    id: "2-medium-2",
+    language: "ts",
+    difficulty: "medium",
+    lines: 2,
+    code: `const data = await fetch("/api/users")\nconst users = await data.json()`,
+  },
+  {
+    id: "2-medium-3",
+    language: "ts",
+    difficulty: "medium",
+    lines: 2,
+    code: `const toggle = () => setOpen((prev) => !prev)\nconst isActive = open && !disabled`,
+  },
+  {
+    id: "2-medium-4",
+    language: "ts",
+    difficulty: "medium",
+    lines: 2,
+    code: `const sorted = [...items].sort((a, b) => a.localeCompare(b))\nconsole.log(sorted)`,
+  },
+
+  // 2-line hard
   {
     id: "2-hard-0",
     language: "ts",
@@ -86,7 +201,29 @@ export const PROMPTS: Prompt[] = [
     lines: 2,
     code: `const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))\nvoid sleep(10)`,
   },
+  {
+    id: "2-hard-2",
+    language: "ts",
+    difficulty: "hard",
+    lines: 2,
+    code: `type Result<T> = { ok: true; data: T } | { ok: false; error: string }\nconst success = <T,>(data: T): Result<T> => ({ ok: true, data })`,
+  },
+  {
+    id: "2-hard-3",
+    language: "ts",
+    difficulty: "hard",
+    lines: 2,
+    code: `export async function GET(req: Request) {\n  return Response.json({ ok: true })\n}`,
+  },
+  {
+    id: "2-hard-4",
+    language: "ts",
+    difficulty: "hard",
+    lines: 2,
+    code: `const keys = <T extends object>(obj: T) => Object.keys(obj) as (keyof T)[]\nconst entries = Object.entries({ a: 1, b: 2 })`,
+  },
 
+  // 3-line easy
   {
     id: "3-easy-0",
     language: "ts",
@@ -102,6 +239,29 @@ export const PROMPTS: Prompt[] = [
     code: `let total = 0\ntotal += 2\ntotal += 3`,
   },
   {
+    id: "3-easy-2",
+    language: "ts",
+    difficulty: "easy",
+    lines: 3,
+    code: `const user = { name: "Alice", age: 30 }\nconst { name, age } = user\nconsole.log(name, age)`,
+  },
+  {
+    id: "3-easy-3",
+    language: "ts",
+    difficulty: "easy",
+    lines: 3,
+    code: `function greet(name: string) {\n  return \`Hello, \${name}!\`\n}`,
+  },
+  {
+    id: "3-easy-4",
+    language: "ts",
+    difficulty: "easy",
+    lines: 3,
+    code: `const colors = ["red", "green", "blue"]\nconst first = colors[0]\nconsole.log(first)`,
+  },
+
+  // 3-line medium
+  {
     id: "3-medium-0",
     language: "ts",
     difficulty: "medium",
@@ -116,6 +276,29 @@ export const PROMPTS: Prompt[] = [
     code: `const toTitle = (s: string) => s[0]!.toUpperCase() + s.slice(1)\nconst out = toTitle("hello")\nconsole.log(out)`,
   },
   {
+    id: "3-medium-2",
+    language: "ts",
+    difficulty: "medium",
+    lines: 3,
+    code: `const fetchUser = async (id: string) => {\n  const res = await fetch(\`/api/users/\${id}\`)\n  return res.json()\n}`,
+  },
+  {
+    id: "3-medium-3",
+    language: "ts",
+    difficulty: "medium",
+    lines: 3,
+    code: `useEffect(() => {\n  document.title = \`Count: \${count}\`\n}, [count])`,
+  },
+  {
+    id: "3-medium-4",
+    language: "ts",
+    difficulty: "medium",
+    lines: 3,
+    code: `const grouped = items.reduce<Record<string, Item[]>>((acc, item) => {\n  (acc[item.type] ??= []).push(item)\n  return acc\n}, {})`,
+  },
+
+  // 3-line hard
+  {
     id: "3-hard-0",
     language: "ts",
     difficulty: "hard",
@@ -128,5 +311,26 @@ export const PROMPTS: Prompt[] = [
     difficulty: "hard",
     lines: 3,
     code: `const pipe = <A, B, C>(ab: (a: A) => B, bc: (b: B) => C) => (a: A) => bc(ab(a))\nconst inc = (n: number) => n + 1\nconsole.log(pipe(inc, inc)(0))`,
+  },
+  {
+    id: "3-hard-2",
+    language: "ts",
+    difficulty: "hard",
+    lines: 3,
+    code: `type Action = { type: "inc" } | { type: "dec" } | { type: "set"; value: number }\nconst reducer = (state: number, action: Action) =>\n  action.type === "set" ? action.value : state + (action.type === "inc" ? 1 : -1)`,
+  },
+  {
+    id: "3-hard-3",
+    language: "ts",
+    difficulty: "hard",
+    lines: 3,
+    code: `function exhaustive(x: never): never {\n  throw new Error(\`Unexpected value: \${x}\`)\n}`,
+  },
+  {
+    id: "3-hard-4",
+    language: "ts",
+    difficulty: "hard",
+    lines: 3,
+    code: `const memoize = <T extends (...args: string[]) => unknown>(fn: T) => {\n  const cache = new Map<string, ReturnType<T>>()\n  return (...args: Parameters<T>) => cache.get(args.join()) ?? fn(...args)\n}`,
   },
 ]

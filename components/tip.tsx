@@ -4,7 +4,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/t
 export default function Tip({
   tip,
   className,
-  align = "start",
+  align = "center",
   side = "bottom",
   children,
 }: {
