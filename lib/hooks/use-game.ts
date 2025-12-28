@@ -1,7 +1,14 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { PROMPTS } from "@/lib/prompts"
+import { computeRunStats } from "@/lib/game/stats"
+import {
+  getPrompt,
+  findFirstPromptIndex,
+  pickRandomPromptIndex,
+} from "@/lib/game/prompts"
+import { createSessionRefs, resetSessionRefs } from "@/lib/game/session"
+import { useScoreApi } from "@/lib/hooks/use-score-api"
 import type {
   Difficulty,
   EditorProgress,
@@ -11,7 +18,10 @@ import type {
   Screen,
   ServerScoreResponse,
 } from "@/lib/types"
-import { useScoreApi } from "@/lib/hooks/use-score-api"
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Constants
+// ─────────────────────────────────────────────────────────────────────────────
 
 const LENGTHS = [1, 2, 3] as const satisfies readonly PromptLines[]
 export type GameLength = (typeof LENGTHS)[number]
@@ -19,239 +29,164 @@ export type GameLength = (typeof LENGTHS)[number]
 const DIFFICULTIES = ["easy", "medium", "hard"] as const satisfies readonly Difficulty[]
 export type GameDifficulty = (typeof DIFFICULTIES)[number]
 
-function firstPromptIndex(lines: GameLength, difficulty: GameDifficulty) {
-  for (let i = 0; i < PROMPTS.length; i++) {
-    const p = PROMPTS[i]
-    if (!p) continue
-    if (p.lines !== lines) continue
-    if (p.difficulty !== difficulty) continue
-    return i
-  }
-  return 0
-}
-
-function randomPromptIndex(lines: GameLength, difficulty: GameDifficulty) {
-  const eligible: number[] = []
-  for (let i = 0; i < PROMPTS.length; i++) {
-    const p = PROMPTS[i]
-    if (!p) continue
-    if (p.lines !== lines) continue
-    if (p.difficulty !== difficulty) continue
-    eligible.push(i)
-  }
-
-  // fallback (shouldn't happen if data is correct)
-  if (eligible.length === 0) return 0
-
-  return eligible[Math.floor(Math.random() * eligible.length)]!
-}
-
-function computeConsistency(timestamps: number[]): number | null {
-  if (timestamps.length < 4) return null
-  const intervals: number[] = []
-  for (let i = 1; i < timestamps.length; i++) {
-    const d = timestamps[i]! - timestamps[i - 1]!
-    if (d > 0) intervals.push(d)
-  }
-  if (intervals.length < 3) return null
-
-  const mean = intervals.reduce((a, b) => a + b, 0) / intervals.length
-  if (mean <= 0) return null
-  const variance =
-    intervals.reduce((acc, x) => acc + Math.pow(x - mean, 2), 0) / intervals.length
-  const sd = Math.sqrt(variance)
-  const cv = sd / mean
-  const score = Math.max(0, Math.min(100, 100 - cv * 100))
-  return Math.round(score)
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// Hook
+// ─────────────────────────────────────────────────────────────────────────────
 
 export function useGame() {
   const { submitScore } = useScoreApi()
 
-  const [screen, setScreen] = useState<Screen>("game")
-  const [length, setLength] = useState<GameLength>(1)
-  const [difficulty, setDifficulty] = useState<GameDifficulty>("easy")
-  const [promptIndex, setPromptIndex] = useState<number>(() =>
-    firstPromptIndex(1, "easy")
-  )
-  const prompt = useMemo(() => PROMPTS[promptIndex], [promptIndex])
-  const target = useMemo(() => prompt.code, [prompt.code])
+  // ─── Settings ────────────────────────────────────────────────────────────
+  const [length, setLengthState] = useState<GameLength>(1)
+  const [difficulty, setDifficultyState] = useState<GameDifficulty>("easy")
 
+  // ─── Prompt ──────────────────────────────────────────────────────────────
+  const [promptIndex, setPromptIndex] = useState(() => findFirstPromptIndex(1, "easy"))
+  const prompt = useMemo(() => getPrompt(promptIndex), [promptIndex])
+  const target = prompt.code
+
+  // ─── Screen & UI State ───────────────────────────────────────────────────
+  const [screen, setScreen] = useState<Screen>("game")
+  const [editorKey, setEditorKey] = useState(0)
+
+  // ─── Live Typing State ───────────────────────────────────────────────────
   const [typed, setTyped] = useState("")
   const [error, setError] = useState(false)
+  const [lastCorrect, setLastCorrect] = useState(0)
+  const [lastTotal, setLastTotal] = useState(0)
 
+  // ─── Timing ──────────────────────────────────────────────────────────────
   const [startMs, setStartMs] = useState<number | null>(null)
-  const [nowMs, setNowMs] = useState<number>(() => Date.now())
-  const keystrokesRef = useRef<number[]>([])
-  const startMsRef = useRef<number | null>(null)
-  const firstRenderMsRef = useRef<number>(0)
-  const prevTypedLenRef = useRef<number>(0)
-  const backspacesRef = useRef<number>(0)
+  const [nowMs, setNowMs] = useState(() => Date.now())
 
+  // ─── Results ─────────────────────────────────────────────────────────────
   const [score, setScore] = useState<ServerScoreResponse | null>(null)
   const [runStats, setRunStats] = useState<RunStats | null>(null)
-  const [lastCorrect, setLastCorrect] = useState<number>(0)
-  const [lastTotal, setLastTotal] = useState<number>(0)
-  const [editorKey, setEditorKey] = useState<number>(0)
 
-  const startGame = useCallback(() => {
-    setScreen("game")
-    setPromptIndex(randomPromptIndex(length, difficulty))
-    setTyped("")
-    setError(false)
-    setStartMs(null)
-    startMsRef.current = null
-    setLastCorrect(0)
-    setLastTotal(0)
-    keystrokesRef.current = []
-    prevTypedLenRef.current = 0
-    backspacesRef.current = 0
-    setScore(null)
-    setRunStats(null)
-    const now = Date.now()
-    firstRenderMsRef.current = now
-    setEditorKey((k) => k + 1)
-  }, [difficulty, length])
+  // ─── Session Refs (mutable, no re-renders) ───────────────────────────────
+  const sessionRef = useRef(createSessionRefs())
 
-  const setLengthAndRestart = useCallback(
+  // ─── Reset Helper ────────────────────────────────────────────────────────
+  const resetGame = useCallback(
+    (newLength: GameLength, newDifficulty: GameDifficulty) => {
+      // Reset session tracking
+      resetSessionRefs(sessionRef.current)
+
+      // Reset React state
+      setScreen("game")
+      setPromptIndex(pickRandomPromptIndex(newLength, newDifficulty))
+      setTyped("")
+      setError(false)
+      setStartMs(null)
+      setLastCorrect(0)
+      setLastTotal(0)
+      setScore(null)
+      setRunStats(null)
+      setEditorKey((k) => k + 1)
+    },
+    []
+  )
+
+  // ─── Public Actions ──────────────────────────────────────────────────────
+  const newSnippet = useCallback(() => {
+    resetGame(length, difficulty)
+  }, [resetGame, length, difficulty])
+
+  const setLength = useCallback(
     (next: GameLength) => {
-      setLength(next)
-      // restart immediately so prompt pool + editor are consistent
-      setPromptIndex(randomPromptIndex(next, difficulty))
-      setScreen("game")
-      setTyped("")
-      setError(false)
-      setStartMs(null)
-      startMsRef.current = null
-      setLastCorrect(0)
-      setLastTotal(0)
-      keystrokesRef.current = []
-      prevTypedLenRef.current = 0
-      backspacesRef.current = 0
-      setScore(null)
-      setRunStats(null)
-      const now = Date.now()
-      firstRenderMsRef.current = now
-      setEditorKey((k) => k + 1)
+      setLengthState(next)
+      resetGame(next, difficulty)
     },
-    [difficulty]
+    [resetGame, difficulty]
   )
 
-  const setDifficultyAndRestart = useCallback(
+  const setDifficulty = useCallback(
     (next: GameDifficulty) => {
-      setDifficulty(next)
-      setPromptIndex(randomPromptIndex(length, next))
-      setScreen("game")
-      setTyped("")
-      setError(false)
-      setStartMs(null)
-      startMsRef.current = null
-      setLastCorrect(0)
-      setLastTotal(0)
-      keystrokesRef.current = []
-      prevTypedLenRef.current = 0
-      backspacesRef.current = 0
-      setScore(null)
-      setRunStats(null)
-      const now = Date.now()
-      firstRenderMsRef.current = now
-      setEditorKey((k) => k + 1)
+      setDifficultyState(next)
+      resetGame(length, next)
     },
-    [length]
+    [resetGame, length]
   )
 
+  // ─── Progress Handler ────────────────────────────────────────────────────
   const onProgress = useCallback(
     (info: EditorProgress) => {
-      if (!startMsRef.current) {
-        startMsRef.current = info.keystrokeTs
+      const session = sessionRef.current
+
+      // Track first keystroke
+      if (!session.startMs) {
+        session.startMs = info.keystrokeTs
         setStartMs(info.keystrokeTs)
       }
 
-      if (info.typed.length < prevTypedLenRef.current) {
-        backspacesRef.current += prevTypedLenRef.current - info.typed.length
+      // Track backspaces
+      if (info.typed.length < session.prevTypedLen) {
+        session.backspaces += session.prevTypedLen - info.typed.length
       }
-      prevTypedLenRef.current = info.typed.length
+      session.prevTypedLen = info.typed.length
 
-      keystrokesRef.current.push(info.keystrokeTs)
+      // Record keystroke
+      session.keystrokes.push(info.keystrokeTs)
+
+      // Update React state
       setTyped(info.typed)
       setError(info.error)
       setLastCorrect(info.correctCharacters)
       setLastTotal(info.totalTypedCharacters)
 
+      // ─── Completion ────────────────────────────────────────────────────
       if (info.typed.length === target.length) {
-        const end = info.keystrokeTs
-        const start = startMsRef.current ?? end
-        const durationMs = Math.max(1, end - start)
-        const timeToFirstKeyMs =
-          startMsRef.current && firstRenderMsRef.current
-            ? Math.max(0, startMsRef.current - firstRenderMsRef.current)
-            : null
+        const endMs = info.keystrokeTs
+        const durationMs = Math.max(1, endMs - (session.startMs ?? endMs))
+        const timeToFirstKeyMs = session.startMs
+          ? Math.max(0, session.startMs - session.firstRenderMs)
+          : null
 
-        const correctChars = info.correctCharacters
-        const totalTypedChars = info.totalTypedCharacters
-        const targetChars = target.length
-        const mistakes = Math.max(0, totalTypedChars - correctChars)
-        const accuracy = totalTypedChars > 0 ? correctChars / totalTypedChars : 0
-        const rawWpm = totalTypedChars / 5 / (durationMs / 60000)
-        const correctWpm = correctChars / 5 / (durationMs / 60000)
-
-        setRunStats({
+        const stats = computeRunStats({
+          correctChars: info.correctCharacters,
+          totalTypedChars: info.totalTypedCharacters,
+          targetChars: target.length,
           durationMs,
+          backspaces: session.backspaces,
+          keystrokes: session.keystrokes,
           timeToFirstKeyMs,
-          targetChars,
-          correctChars,
-          totalTypedChars,
-          mistakes,
-          backspaces: backspacesRef.current,
-          rawWpm,
-          correctWpm,
-          accuracy,
-          consistency: computeConsistency(keystrokesRef.current),
         })
+
+        setRunStats(stats)
         setScreen("results")
 
+        // Submit score
         const result: GameResult = {
           correctCharacters: info.correctCharacters,
           totalTypedCharacters: info.totalTypedCharacters,
           timeMs: durationMs,
         }
 
-        void (async () => {
-          const data = await submitScore(result)
-          setScore(data)
-        })()
+        void submitScore(result).then(setScore)
       }
     },
-    [submitScore, target.length]
+    [target.length, submitScore]
   )
 
+  // ─── Timer Effect ────────────────────────────────────────────────────────
+  // Only run timer when actively typing (startMs is set)
   useEffect(() => {
-    // Avoid impure `Date.now()` during render; initialize after mount.
-    if (firstRenderMsRef.current === 0) firstRenderMsRef.current = Date.now()
-
-    if (screen !== "game") return
+    if (screen !== "game" || !startMs) return
     const id = setInterval(() => setNowMs(Date.now()), 100)
     return () => clearInterval(id)
-  }, [screen])
+  }, [screen, startMs])
 
+  // ─── Derived Values ──────────────────────────────────────────────────────
   const liveTimeMs = startMs ? nowMs - startMs : 0
-  const liveCwpm = startMs ? lastCorrect / 5 / (Math.max(1, liveTimeMs) / 60000) : 0
-  const liveAcc = lastTotal > 0 ? lastCorrect / lastTotal : 0
-
-  const headerWpm =
-    screen === "results"
-      ? Math.floor(score?.cWPM ?? runStats?.correctWpm ?? 0)
-      : Math.floor(liveCwpm)
-  const headerAcc =
-    screen === "results"
-      ? Math.floor((score?.accuracy ?? 0) * 100)
-      : Math.floor(liveAcc * 100)
-
   const progressLeft = `${typed.length} / ${target.length}`
 
+  // ─── Return ──────────────────────────────────────────────────────────────
   return {
+    // Constants
     LENGTHS,
     DIFFICULTIES,
+
+    // State
     screen,
     prompt,
     target,
@@ -261,14 +196,16 @@ export function useGame() {
     runStats,
     liveTimeMs,
     progressLeft,
-    headerWpm,
-    headerAcc,
-    length,
-    setLength: setLengthAndRestart,
-    difficulty,
-    setDifficulty: setDifficultyAndRestart,
-    onProgress,
-    redo: startGame,
     editorKey,
+
+    // Settings
+    length,
+    setLength,
+    difficulty,
+    setDifficulty,
+
+    // Actions
+    onProgress,
+    newSnippet,
   }
 }

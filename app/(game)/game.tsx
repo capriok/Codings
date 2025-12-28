@@ -1,9 +1,9 @@
 "use client"
 
-import { useCallback, useEffect } from "react"
 import GameHeader from "@/app/(game)/game-header"
 import GameSession from "@/app/(game)/game-session"
 import { useGame } from "@/lib/hooks/use-game"
+import { useGameControls } from "@/lib/hooks/use-game-controls"
 
 export default function Game() {
   const {
@@ -21,50 +21,20 @@ export default function Game() {
     difficulty,
     setDifficulty,
     onProgress,
-    redo,
+    newSnippet,
     editorKey,
   } = useGame()
 
-  const cycleLength = useCallback(() => {
-    const currentIndex = LENGTHS.indexOf(length)
-    const nextIndex = (currentIndex + 1) % LENGTHS.length
-    setLength(LENGTHS[nextIndex])
-  }, [LENGTHS, length, setLength])
-
-  const cycleDifficulty = useCallback(() => {
-    const currentIndex = DIFFICULTIES.indexOf(difficulty)
-    const nextIndex = (currentIndex + 1) % DIFFICULTIES.length
-    setDifficulty(DIFFICULTIES[nextIndex])
-  }, [DIFFICULTIES, difficulty, setDifficulty])
-
-  // Global keyboard shortcuts
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      // Only trigger with Ctrl/Cmd
-      if (!e.ctrlKey && !e.metaKey) return
-
-      switch (e.key) {
-        case "r":
-        case "R":
-          e.preventDefault()
-          redo()
-          break
-        case "l":
-        case "L":
-          e.preventDefault()
-          cycleLength()
-          break
-        case "d":
-        case "D":
-          e.preventDefault()
-          cycleDifficulty()
-          break
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [redo, cycleLength, cycleDifficulty])
+  useGameControls({
+    lengths: LENGTHS,
+    length,
+    setLength,
+    difficulties: DIFFICULTIES,
+    difficulty,
+    setDifficulty,
+    newSnippet,
+    enableEnterShortcut: screen === "results",
+  })
 
   return (
     <div className="flex max-w-[800px] w-full flex-col">
@@ -88,7 +58,7 @@ export default function Game() {
         editorKey={editorKey}
         length={length}
         onProgress={onProgress}
-        onRedo={redo}
+        onNewSnippet={newSnippet}
       />
 
       <div className="pb-10" />

@@ -1,11 +1,23 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from "react"
-import { RotateCcw } from "lucide-react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
+import { CornerDownLeftIcon, RotateCcw } from "lucide-react"
 import Tip from "@/components/tip"
-import { Kbd } from "@/components/ui/kbd"
+import { KDBGameControl } from "@/lib/hooks/use-game-controls"
 import type { EditorProgress } from "@/lib/types"
-import { useModKey } from "@/lib/hooks/use-mod-key"
+
+// Static set - never changes, defined once outside component
+const BLOCKED_KEYS = new Set([
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowUp",
+  "ArrowDown",
+  "Home",
+  "End",
+  "PageUp",
+  "PageDown",
+  "Tab",
+])
 
 interface EditorProps {
   target: string
@@ -17,26 +29,17 @@ interface EditorProps {
 export function GameEditor({ target, onProgress, onRedo, disabled }: EditorProps) {
   const [typed, setTyped] = useState<string>("")
   const [error, setError] = useState<boolean>(false)
+  const [wrongChar, setWrongChar] = useState<string | null>(null)
   const [totalTyped, setTotalTyped] = useState<number>(0)
   const [focused, setFocused] = useState<boolean>(false)
-  const mod = useModKey()
   const containerRef = useRef<HTMLDivElement>(null)
+
+  // Memoize line count to avoid recalculating on every render
+  const lineCount = useMemo(() => target.split("\n").length, [target])
 
   useEffect(() => {
     containerRef.current?.focus()
   }, [])
-
-  const blockedKeys = new Set([
-    "ArrowLeft",
-    "ArrowRight",
-    "ArrowUp",
-    "ArrowDown",
-    "Home",
-    "End",
-    "PageUp",
-    "PageDown",
-    "Tab",
-  ])
 
   function handlePaste(e: React.ClipboardEvent) {
     e.preventDefault()
@@ -47,7 +50,7 @@ export function GameEditor({ target, onProgress, onRedo, disabled }: EditorProps
     if (disabled) return
     const now = Date.now()
 
-    if (blockedKeys.has(e.key)) {
+    if (BLOCKED_KEYS.has(e.key)) {
       e.preventDefault()
       return
     }
@@ -65,6 +68,7 @@ export function GameEditor({ target, onProgress, onRedo, disabled }: EditorProps
       if (e.key === "Backspace") {
         e.preventDefault()
         setError(false)
+        setWrongChar(null)
         onProgress({
           typed,
           correctCharacters: typed.length,
@@ -119,6 +123,7 @@ export function GameEditor({ target, onProgress, onRedo, disabled }: EditorProps
       })
     } else {
       setError(true)
+      setWrongChar(keyChar)
       setTotalTyped((prev: number) => {
         const newTotal = prev + 1
         onProgress({
@@ -134,8 +139,6 @@ export function GameEditor({ target, onProgress, onRedo, disabled }: EditorProps
   }
 
   const remaining = target.slice(typed.length)
-  const lines = target.split("\n")
-  const lineCount = lines.length
 
   return (
     <div className="flex w-full flex-col gap-2">
@@ -171,12 +174,23 @@ export function GameEditor({ target, onProgress, onRedo, disabled }: EditorProps
             <span className={error ? "text-destructive" : "text-primary font-medium"}>
               {typed}
             </span>
-            <span
-              className={`inline-block w-[2px] h-[1.2em] align-middle -ml-px ${
-                error ? "bg-destructive" : "bg-primary"
-              } ${focused ? "animate-pulse" : "opacity-0"}`}
-              aria-hidden="true"
-            />
+            {error && wrongChar ? (
+              <span
+                className="bg-destructive/20 text-destructive font-bold border-b-2 border-destructive"
+                title={`You typed "${wrongChar === "\n" ? "↵" : wrongChar}" instead of "${
+                  target[typed.length] === "\n" ? "↵" : target[typed.length]
+                }"`}
+              >
+                {wrongChar === "\n" ? "↵" : wrongChar}
+              </span>
+            ) : (
+              <span
+                className={`inline-block w-[2px] h-[1.2em] align-middle -ml-px ${
+                  error ? "bg-destructive" : "bg-primary"
+                } ${focused ? "animate-pulse" : "opacity-0"}`}
+                aria-hidden="true"
+              />
+            )}
             <span className="text-muted-foreground/60">{remaining}</span>
           </div>
         </div>
@@ -185,10 +199,7 @@ export function GameEditor({ target, onProgress, onRedo, disabled }: EditorProps
             tip={
               <span className="flex items-center gap-2">
                 New snippet
-                <Kbd>
-                  <span className="text-[10px]">{mod}</span>
-                  <span className="text-xs">R</span>
-                </Kbd>
+                <KDBGameControl type="new-snippet" />
               </span>
             }
           >
@@ -207,7 +218,27 @@ export function GameEditor({ target, onProgress, onRedo, disabled }: EditorProps
           error ? "text-destructive" : "text-muted-foreground/70"
         }`}
       >
-        {error ? "↵ Backspace to continue" : "Type exactly · No paste or arrows"}
+        {error && wrongChar ? (
+          <span className="flex items-center gap-2">
+            <span className="text-destructive">
+              Expected{" "}
+              <code className="bg-destructive/10 px-1 rounded">
+                {target[typed.length] === "\n" ? "↵" : target[typed.length]}
+              </code>{" "}
+              got{" "}
+              <code className="bg-destructive/10 px-1 rounded">
+                {wrongChar === "\n" ? "↵" : wrongChar}
+              </code>
+            </span>
+            <span className="text-muted-foreground/50">·</span>
+            <span className="flex items-center gap-1">
+              <CornerDownLeftIcon className="size-3" />
+              Backspace
+            </span>
+          </span>
+        ) : (
+          <span>Type exactly · No paste or arrows</span>
+        )}
       </p>
     </div>
   )

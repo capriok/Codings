@@ -1,13 +1,12 @@
 "use client"
 
-import { useEffect } from "react"
+import { useMemo } from "react"
 import { GameEditor } from "@/app/(game)/game-editor"
 import Tip from "@/components/tip"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Kbd } from "@/components/ui/kbd"
 import { Separator } from "@/components/ui/separator"
-import { useModKey } from "@/lib/hooks/use-mod-key"
+import { KDBGameControl } from "@/lib/hooks/use-game-controls"
 import { formatDifficulty } from "@/lib/utils"
 import type {
   EditorProgress,
@@ -28,7 +27,7 @@ export default function GameSession({
   editorKey,
   length,
   onProgress,
-  onRedo,
+  onNewSnippet,
 }: {
   screen: Screen
   prompt: Prompt
@@ -40,7 +39,7 @@ export default function GameSession({
   editorKey: number
   length: number
   onProgress: (info: EditorProgress) => void
-  onRedo: () => void
+  onNewSnippet: () => void
 }) {
   const resultsCorrectWpm = score?.cWPM ?? runStats?.correctWpm ?? 0
   const resultsAccuracy = score?.accuracy ?? runStats?.accuracy ?? 0
@@ -49,22 +48,8 @@ export default function GameSession({
   const resultsRun =
     runStats != null ? `${runStats.correctChars} / ${runStats.targetChars}` : progressLeft
 
-  // Keyboard shortcut: Ctrl/Cmd + Enter to go next
-  useEffect(() => {
-    if (screen !== "results") return
-
-    function handleKeyDown(e: KeyboardEvent) {
-      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-        e.preventDefault()
-        onRedo()
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [screen, onRedo])
-
-  const mod = useModKey()
+  // Memoize target lines to avoid split on every render
+  const targetLines = useMemo(() => target.split("\n"), [target])
 
   return (
     <section className="mt-10 w-full select-none">
@@ -91,7 +76,7 @@ export default function GameSession({
               className="shrink-0 border-r border-border/30 bg-muted/70 px-3 py-4 text-right text-muted-foreground/40"
               aria-hidden="true"
             >
-              {target.split("\n").map((_, i) => (
+              {targetLines.map((_, i) => (
                 <div key={i} className="leading-relaxed">
                   {i + 1}
                 </div>
@@ -106,7 +91,7 @@ export default function GameSession({
             key={`${prompt.id}-${editorKey}-${length}`}
             target={target}
             onProgress={onProgress}
-            onRedo={onRedo}
+            onRedo={onNewSnippet}
           />
         </div>
       ) : null}
@@ -135,16 +120,13 @@ export default function GameSession({
             <Tip tip="Try another snippet">
               <Button
                 type="button"
-                onClick={onRedo}
+                onClick={onNewSnippet}
                 variant="secondary"
                 size="sm"
                 className="gap-2 font-mono text-xs"
               >
                 Next
-                <Kbd>
-                  <span className="text-[10px]">{mod}</span>
-                  <span className="text-xs">↵</span>
-                </Kbd>
+                <KDBGameControl type="next-game" />
               </Button>
             </Tip>
           </div>

@@ -1,12 +1,11 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Kbd } from "@/components/ui/kbd"
 import type { GameLength } from "@/lib/hooks/use-game"
 import { cn, formatCodeLines, formatDifficulty } from "@/lib/utils"
 import type { GameDifficulty } from "@/lib/hooks/use-game"
 import Tip from "@/components/tip"
-import { useModKey } from "@/lib/hooks/use-mod-key"
+import { KDBGameControl } from "@/lib/hooks/use-game-controls"
 
 export default function GameHeader({
   lengths,
@@ -23,8 +22,6 @@ export default function GameHeader({
   difficulty: GameDifficulty
   onDifficultyChange: (d: GameDifficulty) => void
 }) {
-  const mod = useModKey()
-
   return (
     <header className="w-full select-none">
       <div className="pt-12 text-center">
@@ -38,31 +35,19 @@ export default function GameHeader({
                 <div className="flex flex-col gap-1.5 border-t border-border/50 pt-2">
                   <div className="flex items-center justify-between gap-4">
                     <span className="text-xs">New snippet</span>
-                    <Kbd>
-                      <span className="text-[10px]">{mod}</span>
-                      <span className="text-xs">R</span>
-                    </Kbd>
+                    <KDBGameControl type="new-snippet" />
                   </div>
                   <div className="flex items-center justify-between gap-4">
                     <span className="text-xs">Cycle lines</span>
-                    <Kbd>
-                      <span className="text-[10px]">{mod}</span>
-                      <span className="text-xs">L</span>
-                    </Kbd>
+                    <KDBGameControl type="cycle-length" />
                   </div>
                   <div className="flex items-center justify-between gap-4">
                     <span className="text-xs">Cycle difficulty</span>
-                    <Kbd>
-                      <span className="text-[10px]">{mod}</span>
-                      <span className="text-xs">D</span>
-                    </Kbd>
+                    <KDBGameControl type="cycle-difficulty" />
                   </div>
                   <div className="flex items-center justify-between gap-4">
                     <span className="text-xs">Next (results)</span>
-                    <Kbd>
-                      <span className="text-[10px]">{mod}</span>
-                      <span className="text-base">↵</span>
-                    </Kbd>
+                    <KDBGameControl type="next-game" />
                   </div>
                 </div>
               </div>
@@ -76,17 +61,11 @@ export default function GameHeader({
       </div>
 
       <div className="mt-10 flex items-center gap-6 border-b border-border/40 pb-3 font-mono text-sm">
-        <CodeLineSelections
-          options={lengths}
-          value={length}
-          onChange={onLengthChange}
-          mod={mod}
-        />
+        <CodeLineSelections options={lengths} value={length} onChange={onLengthChange} />
         <DifficultySelections
           options={difficulties}
           value={difficulty}
           onChange={onDifficultyChange}
-          mod={mod}
         />
       </div>
     </header>
@@ -97,12 +76,10 @@ function CodeLineSelections({
   options,
   value,
   onChange,
-  mod,
 }: {
   options: readonly GameLength[]
   value: GameLength
   onChange: (next: GameLength) => void
-  mod: string
 }) {
   return (
     <div className="flex items-center gap-1">
@@ -111,10 +88,7 @@ function CodeLineSelections({
           tip={
             <span className="flex items-center gap-2">
               <span className="font-medium">{formatCodeLines(c)}</span>
-              <Kbd>
-                <span className="text-[10px]">{mod}</span>
-                <span className="text-xs">L</span>
-              </Kbd>
+              <KDBGameControl type="cycle-length" />
             </span>
           }
           key={c}
@@ -142,12 +116,10 @@ function DifficultySelections({
   options,
   value,
   onChange,
-  mod,
 }: {
   options: readonly GameDifficulty[]
   value: GameDifficulty
   onChange: (next: GameDifficulty) => void
-  mod: string
 }) {
   return (
     <div className="flex items-center gap-1">
@@ -156,10 +128,7 @@ function DifficultySelections({
           tip={
             <span className="flex items-center gap-2">
               <span className="font-medium">{formatDifficulty(d)}</span>
-              <Kbd>
-                <span className="text-[10px]">{mod}</span>
-                <span className="text-xs">D</span>
-              </Kbd>
+              <KDBGameControl type="cycle-difficulty" />
             </span>
           }
           key={d}
