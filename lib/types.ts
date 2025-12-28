@@ -1,14 +1,31 @@
 export type Difficulty = "easy" | "medium" | "hard"
 export type Language = "ts"
 
+export type PromptLines = 1 | 2 | 3
+
 export interface Prompt {
   id: string
   language: Language
   code: string
   difficulty: Difficulty
+  lines: PromptLines
 }
 
-export interface RaceResult {
+export interface RunStats {
+  durationMs: number
+  timeToFirstKeyMs: number | null
+  targetChars: number
+  correctChars: number
+  totalTypedChars: number
+  mistakes: number
+  backspaces: number
+  rawWpm: number
+  correctWpm: number
+  accuracy: number // 0..1
+  consistency: number | null // 0..100
+}
+
+export interface GameResult {
   correctCharacters: number
   totalTypedCharacters: number
   timeMs: number
@@ -30,4 +47,4 @@ export interface EditorProgress {
   keystrokeTs: number
 }
 
-export type Screen = "home" | "race" | "results"
+export type Screen = "home" | "game" | "results"

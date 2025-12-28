@@ -1,11 +1,9 @@
-import Game from "./Game"
+import Game from "./(game)/game"
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <main className="w-full">
-        <Game />
-      </main>
-    </div>
+    <main className="bg-background text-foreground flex items-center justify-center px-6">
+      <Game />
+    </main>
   )
 }

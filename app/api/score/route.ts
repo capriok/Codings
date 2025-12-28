@@ -1,41 +1,38 @@
-import { computeScore } from "@/lib/score"
+import { NextResponse } from "next/server"
 
-function isScoreInput(
-  x: any
-): x is { correctCharacters: number; totalTypedCharacters: number; timeMs: number } {
-  return (
-    x &&
-    typeof x.correctCharacters === "number" &&
-    Number.isFinite(x.correctCharacters) &&
-    typeof x.totalTypedCharacters === "number" &&
-    Number.isFinite(x.totalTypedCharacters) &&
-    typeof x.timeMs === "number" &&
-    Number.isFinite(x.timeMs)
-  )
-}
+import { computeScore } from "@/lib/score"
+import type { GameResult, ServerScoreResponse } from "@/lib/types"
 
 export async function POST(req: Request) {
+  let body: unknown
   try {
-    const body = await req.json()
-    if (!isScoreInput(body)) {
-      return new Response(JSON.stringify({ error: "Invalid fields" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      })
-    }
-    const result = computeScore({
-      correctCharacters: body.correctCharacters,
-      totalTypedCharacters: body.totalTypedCharacters,
-      timeMs: body.timeMs,
-    })
-    return new Response(JSON.stringify(result), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    })
-  } catch (e) {
-    return new Response(JSON.stringify({ error: "Invalid JSON" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    })
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 })
   }
+
+  const result = body as Partial<GameResult> | null
+  const correctCharacters = Number(result?.correctCharacters)
+  const totalTypedCharacters = Number(result?.totalTypedCharacters)
+  const timeMs = Number(result?.timeMs)
+
+  if (
+    !Number.isFinite(correctCharacters) ||
+    !Number.isFinite(totalTypedCharacters) ||
+    !Number.isFinite(timeMs)
+  ) {
+    return NextResponse.json({ error: "Invalid payload" }, { status: 400 })
+  }
+
+  if (correctCharacters < 0 || totalTypedCharacters < 0 || timeMs < 0) {
+    return NextResponse.json({ error: "Invalid payload" }, { status: 400 })
+  }
+
+  const output: ServerScoreResponse = computeScore({
+    correctCharacters,
+    totalTypedCharacters,
+    timeMs,
+  })
+
+  return NextResponse.json(output)
 }
