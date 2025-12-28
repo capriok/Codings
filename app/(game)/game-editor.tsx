@@ -3,7 +3,9 @@
 import React, { useEffect, useRef, useState } from "react"
 import { RotateCcw } from "lucide-react"
 import Tip from "@/components/tip"
+import { Kbd } from "@/components/ui/kbd"
 import type { EditorProgress } from "@/lib/types"
+import { useModKey } from "@/lib/hooks/use-mod-key"
 
 interface EditorProps {
   target: string
@@ -17,6 +19,7 @@ export function GameEditor({ target, onProgress, onRedo, disabled }: EditorProps
   const [error, setError] = useState<boolean>(false)
   const [totalTyped, setTotalTyped] = useState<number>(0)
   const [focused, setFocused] = useState<boolean>(false)
+  const mod = useModKey()
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -178,7 +181,17 @@ export function GameEditor({ target, onProgress, onRedo, disabled }: EditorProps
           </div>
         </div>
         {onRedo && (
-          <Tip tip="Get a new snippet">
+          <Tip
+            tip={
+              <span className="flex items-center gap-2">
+                New snippet
+                <Kbd>
+                  <span className="text-[10px]">{mod}</span>
+                  <span className="text-xs">R</span>
+                </Kbd>
+              </span>
+            }
+          >
             <button
               type="button"
               onClick={onRedo}

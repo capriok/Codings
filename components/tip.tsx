@@ -8,7 +8,7 @@ export default function Tip({
   side = "bottom",
   children,
 }: {
-  tip: string
+  tip: React.ReactNode
   className?: string
   align?: "start" | "center" | "end"
   side?: "top" | "right" | "bottom" | "left"

@@ -17,5 +17,5 @@ export function formatDifficulty(difficulty: Difficulty): string {
 }
 
 export function formatCodeLines(lines: number): string {
-  return `${lines} line${lines === 1 ? "" : "s"}`
+  return `${lines} Line${lines === 1 ? "" : "s"}`
 }

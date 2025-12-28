@@ -1,10 +1,13 @@
 "use client"
 
+import { useEffect } from "react"
 import { GameEditor } from "@/app/(game)/game-editor"
 import Tip from "@/components/tip"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Kbd } from "@/components/ui/kbd"
 import { Separator } from "@/components/ui/separator"
+import { useModKey } from "@/lib/hooks/use-mod-key"
 import { formatDifficulty } from "@/lib/utils"
 import type {
   EditorProgress,
@@ -45,6 +48,23 @@ export default function GameSession({
   const resultsScore = score?.score ?? 0
   const resultsRun =
     runStats != null ? `${runStats.correctChars} / ${runStats.targetChars}` : progressLeft
+
+  // Keyboard shortcut: Ctrl/Cmd + Enter to go next
+  useEffect(() => {
+    if (screen !== "results") return
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+        e.preventDefault()
+        onRedo()
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [screen, onRedo])
+
+  const mod = useModKey()
 
   return (
     <section className="mt-10 w-full select-none">
@@ -118,9 +138,13 @@ export default function GameSession({
                 onClick={onRedo}
                 variant="secondary"
                 size="sm"
-                className="font-mono text-xs"
+                className="gap-2 font-mono text-xs"
               >
-                Next →
+                Next
+                <Kbd>
+                  <span className="text-[10px]">{mod}</span>
+                  <span className="text-xs">↵</span>
+                </Kbd>
               </Button>
             </Tip>
           </div>
