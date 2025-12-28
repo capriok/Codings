@@ -10,7 +10,7 @@ import { AnimatedStatCard, AnimatedStat, AnimatedScore } from "@/components/anim
 import TypewriterCode from "@/components/typewriter-code"
 import { KDBGameControl } from "@/lib/hooks/use-game-controls"
 import { formatDifficulty } from "@/lib/utils"
-import type { Prompt, RunStats, ServerScoreResponse } from "@/lib/types"
+import type { Prompt, RunStats, ServerScoreResponse, ScoringMode } from "@/lib/types"
 
 // Animation timing constants (in ms)
 const TIMING = {
@@ -32,6 +32,7 @@ export default function GameResults({
   progressLeft,
   score,
   runStats,
+  scoringMode,
   onNewSnippet,
 }: {
   prompt: Prompt
@@ -39,6 +40,7 @@ export default function GameResults({
   progressLeft: string
   score: ServerScoreResponse | null
   runStats: RunStats | null
+  scoringMode?: ScoringMode
   onNewSnippet: () => void
 }) {
   const resultsCorrectWpm = score?.cWPM ?? runStats?.correctWpm ?? 0
@@ -56,7 +58,7 @@ export default function GameResults({
   }, [runStats, progressLeft])
 
   return (
-    <section className="mt-10 w-full select-none">
+    <section className="w-full select-none">
       <div className="flex flex-col gap-6">
         {/* Header with badges and redo */}
         <motion.div
@@ -81,6 +83,13 @@ export default function GameResults({
                 {formatDifficulty(prompt.difficulty)}
               </Badge>
             </Tip>
+            {scoringMode && (
+              <Tip tip="Scoring mode" align="start">
+                <Badge variant="outline" className="font-mono text-xs capitalize">
+                  {scoringMode}
+                </Badge>
+              </Tip>
+            )}
           </div>
           <Button
             type="button"
@@ -89,8 +98,8 @@ export default function GameResults({
             size="sm"
             className="group font-mono text-xs gap-1.5"
           >
-            Next
-            <KDBGameControl type="next-game" />
+            Again
+            <KDBGameControl flat type="next-game" />
           </Button>
         </motion.div>
 

@@ -30,43 +30,7 @@ export default function GameHeader({
 }) {
   return (
     <header className="w-full select-none">
-      <div className="pt-12 text-center">
-        <h1 className="font-mono text-2xl font-bold tracking-tight text-foreground">
-          <Tip
-            align="center"
-            side="bottom"
-            tip={
-              <div className="flex flex-col gap-3 py-1">
-                <p className="text-sm">Type code snippets as fast as you can</p>
-                <div className="flex flex-col gap-1.5 border-t border-border/50 pt-2">
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="text-xs">New snippet</span>
-                    <KDBGameControl type="new-snippet" />
-                  </div>
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="text-xs">Cycle lines</span>
-                    <KDBGameControl type="cycle-length" />
-                  </div>
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="text-xs">Cycle difficulty</span>
-                    <KDBGameControl type="cycle-difficulty" />
-                  </div>
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="text-xs">Next (results)</span>
-                    <KDBGameControl type="next-game" />
-                  </div>
-                </div>
-              </div>
-            }
-          >
-            <span>
-              codings<span className="text-primary">_</span>
-            </span>
-          </Tip>
-        </h1>
-      </div>
-
-      <div className="mt-10 flex items-end justify-between border-b border-border/40 pb-3 font-mono text-sm">
+      <div className="flex items-end justify-between mb-4 font-mono text-sm">
         <div className="flex items-center gap-6">
           <CodeLineSelections options={lengths} value={length} onChange={onLengthChange} />
           <DifficultySelections
@@ -95,11 +59,15 @@ function CodeLineSelections({
   onChange: (next: GameLength) => void
 }) {
   return (
-    <div className="group flex flex-col gap-1.5">
-      <div className="flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100">
-        <span className="text-xs text-muted-foreground">Lines</span>
-        <KDBGameControl type="cycle-length" />
-      </div>
+    <Tip
+      align="start"
+      tip={
+        <div className="flex items-center gap-2">
+          <span className="text-xs">Lines</span>
+          <KDBGameControl type="cycle-length" />
+        </div>
+      }
+    >
       <div className="flex items-center gap-1">
         {options.map((c) => (
           <Button
@@ -118,7 +86,7 @@ function CodeLineSelections({
           </Button>
         ))}
       </div>
-    </div>
+    </Tip>
   )
 }
 
@@ -132,11 +100,15 @@ function DifficultySelections({
   onChange: (next: GameDifficulty) => void
 }) {
   return (
-    <div className="group flex flex-col gap-1.5">
-      <div className="flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100">
-        <span className="text-xs text-muted-foreground">Difficulty</span>
-        <KDBGameControl type="cycle-difficulty" />
-      </div>
+    <Tip
+      align="start"
+      tip={
+        <div className="flex items-center gap-2">
+          <span className="text-xs">Difficulty</span>
+          <KDBGameControl type="cycle-difficulty" />
+        </div>
+      }
+    >
       <div className="flex items-center gap-1">
         {options.map((d) => (
           <Button
@@ -156,7 +128,7 @@ function DifficultySelections({
           </Button>
         ))}
       </div>
-    </div>
+    </Tip>
   )
 }
 
@@ -182,7 +154,7 @@ function ScoringModeToggle({
   return (
     <div className="flex items-center rounded-md border border-border/40 h-[28px] bg-muted/30 p-0.5">
       {options.map((mode) => (
-        <Tip key={mode} tip={tips[mode]} align="end">
+        <Tip key={mode} tip={tips[mode]} align="start">
           <button
             type="button"
             onClick={() => onChange(mode)}

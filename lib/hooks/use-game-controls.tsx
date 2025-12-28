@@ -88,16 +88,26 @@ const CONTROL_KEYS: Record<ControlType, React.ReactNode> = {
   "next-game": <CornerDownLeftIcon className="size-3" />,
 }
 
-export function KDBGameControl({ type }: { type: ControlType }) {
+export function KDBGameControl({ type, flat }: { type: ControlType; flat?: boolean }) {
   const isMac =
     typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.userAgent)
   const mod = isMac ? <CommandIcon className="size-3" /> : <span className="font-sans text-xs">Ctrl</span>
   const key = CONTROL_KEYS[type]
 
-  return (
-    <Kbd>
+  const content = (
+    <>
       <span className="font-sans text-xs">{mod}</span>
       <span className="text-xs">{key}</span>
-    </Kbd>
+    </>
   )
+
+  if (flat) {
+    return (
+      <span className={cn("inline-flex items-center gap-1 font-mono text-xs")}>
+        {content}
+      </span>
+    )
+  }
+
+  return <Kbd>{content}</Kbd>
 }

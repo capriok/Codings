@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo } from "react"
-import { GameEditor } from "@/app/(game)/game-editor"
+import GameEditor from "@/app/(game)/game-editor"
 import Tip from "@/components/tip"
 import type { EditorProgress, Prompt } from "@/lib/types"
 
@@ -28,7 +28,7 @@ export default function GameSession({
   const targetLines = useMemo(() => target.split("\n"), [target])
 
   return (
-    <section className="mt-10 w-full select-none">
+    <section className="w-full select-none">
       <div className="flex flex-col gap-5 ">
         {/* Progress indicator */}
         <div className="flex items-center justify-between">

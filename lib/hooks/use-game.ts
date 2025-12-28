@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useRouter } from "next/navigation"
 import { computeRunStats } from "@/lib/game/stats"
 import {
   getPrompt,
@@ -9,6 +10,8 @@ import {
 } from "@/lib/game/prompts"
 import { createSessionRefs, resetSessionRefs } from "@/lib/game/session"
 import { useScoreApi } from "@/lib/hooks/use-score-api"
+import { encodeResult } from "@/lib/result-codec"
+import { useResultHistory } from "@/lib/hooks/use-result-history"
 import type {
   Difficulty,
   EditorProgress,
@@ -38,7 +41,9 @@ export type GameScoringMode = (typeof SCORING_MODES)[number]
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function useGame() {
+  const router = useRouter()
   const { submitScore } = useScoreApi()
+  const { addResult } = useResultHistory()
 
   // ─── Settings ────────────────────────────────────────────────────────────
   const [length, setLengthState] = useState<GameLength>(1)
@@ -171,10 +176,16 @@ export function useGame() {
           scoringMode,
         }
 
-        void submitScore(result).then(setScore)
+        void submitScore(result).then((serverScore) => {
+          setScore(serverScore)
+          // Encode result and navigate to shareable URL
+          const encoded = encodeResult(prompt, stats, serverScore, scoringMode)
+          addResult(encoded)
+          router.push(`/${encoded}`)
+        })
       }
     },
-    [target.length, submitScore, difficulty, scoringMode]
+    [target.length, submitScore, difficulty, scoringMode, prompt, addResult, router]
   )
 
   // ─── Timer Effect ────────────────────────────────────────────────────────
