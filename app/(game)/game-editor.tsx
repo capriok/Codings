@@ -2,7 +2,6 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { CornerDownLeftIcon, RotateCcw } from "lucide-react"
-import Tip from "@/components/tip"
 import { KDBGameControl } from "@/lib/hooks/use-game-controls"
 import type { EditorProgress } from "@/lib/types"
 
@@ -195,22 +194,16 @@ export function GameEditor({ target, onProgress, onRedo, disabled }: EditorProps
           </div>
         </div>
         {onRedo && (
-          <Tip
-            tip={
-              <span className="flex items-center gap-2">
-                New snippet
-                <KDBGameControl type="new-snippet" />
-              </span>
-            }
+          <button
+            type="button"
+            onClick={onRedo}
+            className="group absolute right-3 top-3 flex h-8 items-center gap-2 rounded-md px-2 text-muted-foreground/60 transition-colors hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
           >
-            <button
-              type="button"
-              onClick={onRedo}
-              className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground/60 transition-colors hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
-            >
-              <RotateCcw className="h-4 w-4" />
-            </button>
-          </Tip>
+            <div className="opacity-0 transition-opacity group-hover:opacity-100">
+              <KDBGameControl type="new-snippet" />
+            </div>
+            <RotateCcw className="h-4 w-4" />
+          </button>
         )}
       </div>
       <p

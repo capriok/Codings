@@ -117,18 +117,18 @@ export default function GameSession({
                 </Badge>
               </Tip>
             </div>
-            <Tip tip="Try another snippet">
-              <Button
-                type="button"
-                onClick={onNewSnippet}
-                variant="secondary"
-                size="sm"
-                className="gap-2 font-mono text-xs"
-              >
-                Next
+            <Button
+              type="button"
+              onClick={onNewSnippet}
+              variant="secondary"
+              size="sm"
+              className="group font-mono text-xs gap-1.5"
+            >
+              <span className="hidden group-hover:inline-flex transition-opacity">
                 <KDBGameControl type="next-game" />
-              </Button>
-            </Tip>
+              </span>
+              Next
+            </Button>
           </div>
 
           {/* Main stats */}

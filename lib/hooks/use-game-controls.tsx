@@ -3,8 +3,8 @@
 import { useCallback, useEffect } from "react"
 import type { GameDifficulty, GameLength } from "@/lib/hooks/use-game"
 import { Kbd } from "@/components/ui/kbd"
-import { useModKey } from "./use-mod-key"
-import { CornerDownLeftIcon } from "lucide-react"
+import { CommandIcon, CornerDownLeftIcon } from "lucide-react"
+import { cn } from "../utils"
 
 interface UseGameControlsParams {
   lengths: readonly GameLength[]
@@ -89,14 +89,18 @@ const CONTROL_KEYS: Record<ControlType, React.ReactNode> = {
 }
 
 export function KDBGameControl({ type }: { type: ControlType }) {
-  const mod = useModKey()
+  const isMac =
+    typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.userAgent)
+  const mod = isMac ? <CommandIcon size={12} /> : "Ctrl"
   const key = CONTROL_KEYS[type]
   const isEnter = type === "next-game"
 
   return (
-    <Kbd className="w-14">
-      <span className="text-[10px]">{mod}</span>
-      <span className={isEnter ? "text-base" : "text-xs"}>{key}</span>
+    <Kbd>
+      <span className="font-sans text-xs">{mod}</span>
+      <span className={cn(
+        isEnter ? "text-base" : "text-xs"
+      )}>{key}</span>
     </Kbd>
   )
 }

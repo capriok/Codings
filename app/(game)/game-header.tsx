@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import type { GameLength } from "@/lib/hooks/use-game"
-import { cn, formatCodeLines, formatDifficulty } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 import type { GameDifficulty } from "@/lib/hooks/use-game"
 import Tip from "@/components/tip"
 import { KDBGameControl } from "@/lib/hooks/use-game-controls"
@@ -82,17 +82,13 @@ function CodeLineSelections({
   onChange: (next: GameLength) => void
 }) {
   return (
-    <div className="flex items-center gap-1">
-      {options.map((c) => (
-        <Tip
-          tip={
-            <span className="flex items-center gap-2">
-              <span className="font-medium">{formatCodeLines(c)}</span>
-              <KDBGameControl type="cycle-length" />
-            </span>
-          }
-          key={c}
-        >
+    <div className="group flex flex-col gap-1.5">
+      <div className="flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+        <span className="text-xs text-muted-foreground">Lines</span>
+        <KDBGameControl type="cycle-length" />
+      </div>
+      <div className="flex items-center gap-1">
+        {options.map((c) => (
           <Button
             size="sm"
             variant="ghost"
@@ -103,11 +99,12 @@ function CodeLineSelections({
                 : "text-muted-foreground/60 hover:text-foreground"
             )}
             onClick={() => onChange(c)}
+            key={c}
           >
             {c}
           </Button>
-        </Tip>
-      ))}
+        ))}
+      </div>
     </div>
   )
 }
@@ -122,17 +119,13 @@ function DifficultySelections({
   onChange: (next: GameDifficulty) => void
 }) {
   return (
-    <div className="flex items-center gap-1">
-      {options.map((d) => (
-        <Tip
-          tip={
-            <span className="flex items-center gap-2">
-              <span className="font-medium">{formatDifficulty(d)}</span>
-              <KDBGameControl type="cycle-difficulty" />
-            </span>
-          }
-          key={d}
-        >
+    <div className="group flex flex-col gap-1.5">
+      <div className="flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+        <span className="text-xs text-muted-foreground">Difficulty</span>
+        <KDBGameControl type="cycle-difficulty" />
+      </div>
+      <div className="flex items-center gap-1">
+        {options.map((d) => (
           <Button
             type="button"
             variant="ghost"
@@ -144,11 +137,12 @@ function DifficultySelections({
                 : "text-muted-foreground/60 hover:text-foreground"
             )}
             onClick={() => onChange(d)}
+            key={d}
           >
             {d}
           </Button>
-        </Tip>
-      ))}
+        ))}
+      </div>
     </div>
   )
 }
