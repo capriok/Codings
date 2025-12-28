@@ -10,6 +10,7 @@ export default function Game() {
   const {
     LENGTHS,
     DIFFICULTIES,
+    SCORING_MODES,
     screen,
     prompt,
     target,
@@ -21,6 +22,8 @@ export default function Game() {
     setLength,
     difficulty,
     setDifficulty,
+    scoringMode,
+    setScoringMode,
     onProgress,
     newSnippet,
     editorKey,
@@ -46,6 +49,9 @@ export default function Game() {
         difficulties={DIFFICULTIES}
         difficulty={difficulty}
         onDifficultyChange={setDifficulty}
+        scoringModes={SCORING_MODES}
+        scoringMode={scoringMode}
+        onScoringModeChange={setScoringMode}
       />
 
       {screen === "game" && (

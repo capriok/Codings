@@ -16,6 +16,7 @@ import type {
   GameResult,
   RunStats,
   Screen,
+  ScoringMode,
   ServerScoreResponse,
 } from "@/lib/types"
 
@@ -29,6 +30,9 @@ export type GameLength = (typeof LENGTHS)[number]
 const DIFFICULTIES = ["easy", "medium", "hard"] as const satisfies readonly Difficulty[]
 export type GameDifficulty = (typeof DIFFICULTIES)[number]
 
+const SCORING_MODES = ["simple", "tuned"] as const satisfies readonly ScoringMode[]
+export type GameScoringMode = (typeof SCORING_MODES)[number]
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Hook
 // ─────────────────────────────────────────────────────────────────────────────
@@ -39,6 +43,7 @@ export function useGame() {
   // ─── Settings ────────────────────────────────────────────────────────────
   const [length, setLengthState] = useState<GameLength>(1)
   const [difficulty, setDifficultyState] = useState<GameDifficulty>("easy")
+  const [scoringMode, setScoringMode] = useState<GameScoringMode>("tuned")
 
   // ─── Prompt ──────────────────────────────────────────────────────────────
   const [promptIndex, setPromptIndex] = useState(() => findFirstPromptIndex(1, "easy"))
@@ -155,17 +160,21 @@ export function useGame() {
         setRunStats(stats)
         setScreen("results")
 
-        // Submit score
+        // Submit score with extended fields
         const result: GameResult = {
           correctCharacters: info.correctCharacters,
           totalTypedCharacters: info.totalTypedCharacters,
           timeMs: durationMs,
+          difficulty,
+          targetChars: target.length,
+          consistency: stats.consistency,
+          scoringMode,
         }
 
         void submitScore(result).then(setScore)
       }
     },
-    [target.length, submitScore]
+    [target.length, submitScore, difficulty, scoringMode]
   )
 
   // ─── Timer Effect ────────────────────────────────────────────────────────
@@ -185,6 +194,7 @@ export function useGame() {
     // Constants
     LENGTHS,
     DIFFICULTIES,
+    SCORING_MODES,
 
     // State
     screen,
@@ -203,6 +213,8 @@ export function useGame() {
     setLength,
     difficulty,
     setDifficulty,
+    scoringMode,
+    setScoringMode,
 
     // Actions
     onProgress,

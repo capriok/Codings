@@ -1,13 +1,30 @@
 "use client"
 
 import { useMemo } from "react"
+import { motion } from "motion/react"
 import Tip from "@/components/tip"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { AnimatedStatCard, AnimatedStat, AnimatedScore } from "@/components/animated-stat"
+import TypewriterCode from "@/components/typewriter-code"
 import { KDBGameControl } from "@/lib/hooks/use-game-controls"
 import { formatDifficulty } from "@/lib/utils"
 import type { Prompt, RunStats, ServerScoreResponse } from "@/lib/types"
+
+// Animation timing constants (in ms)
+const TIMING = {
+  headerDelay: 0,
+  wpmDelay: 100,
+  accuracyDelay: 250,
+  timeDelay: 400,
+  secondaryStatsDelay: 550,
+  scoreDelay: 750,
+  codeDelay: 1100,
+  statDuration: 800,
+  scoreDuration: 1000,
+  codeSpeed: 80, // chars per second
+}
 
 export default function GameResults({
   prompt,
@@ -28,17 +45,26 @@ export default function GameResults({
   const resultsAccuracy = score?.accuracy ?? runStats?.accuracy ?? 0
   const resultsTimeSec = (runStats?.durationMs ?? 0) / 1000
   const resultsScore = score?.score ?? 0
-  const resultsRun =
-    runStats != null ? `${runStats.correctChars} / ${runStats.targetChars}` : progressLeft
 
-  // Memoize target lines to avoid split on every render
-  const targetLines = useMemo(() => target.split("\n"), [target])
+  // Parse progress for animation
+  const [correctChars, targetChars] = useMemo(() => {
+    if (runStats != null) {
+      return [runStats.correctChars, runStats.targetChars]
+    }
+    const parts = progressLeft.split(" / ")
+    return [parseInt(parts[0]) || 0, parseInt(parts[1]) || 0]
+  }, [runStats, progressLeft])
 
   return (
     <section className="mt-10 w-full select-none">
       <div className="flex flex-col gap-6">
         {/* Header with badges and redo */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: TIMING.headerDelay / 1000 }}
+          className="flex flex-wrap items-center justify-between gap-3"
+        >
           <div className="flex flex-wrap items-center gap-2">
             <Tip tip="Number of lines in snippet" align="start">
               <Badge variant="secondary" className="font-mono text-xs">
@@ -66,132 +92,107 @@ export default function GameResults({
             Next
             <KDBGameControl type="next-game" />
           </Button>
-        </div>
+        </motion.div>
 
-        {/* Main stats */}
+        {/* Main stats with staggered count-up */}
         <div className="grid grid-cols-3 gap-3">
-          <StatCard
+          <AnimatedStatCard
             label="WPM"
-            value={resultsCorrectWpm.toFixed(0)}
+            value={resultsCorrectWpm}
+            format={(v) => v.toFixed(0)}
             tip="Words per minute (correct chars / 5 / min)"
             accent
+            delay={TIMING.wpmDelay}
+            duration={TIMING.statDuration}
           />
-          <StatCard
+          <AnimatedStatCard
             label="Accuracy"
-            value={`${(resultsAccuracy * 100).toFixed(0)}%`}
+            value={resultsAccuracy * 100}
+            format={(v) => `${v.toFixed(0)}%`}
             tip="Correct characters / total typed"
             accent
+            delay={TIMING.accuracyDelay}
+            duration={TIMING.statDuration}
           />
-          <StatCard
+          <AnimatedStatCard
             label="Time"
-            value={`${resultsTimeSec.toFixed(2)}s`}
+            value={resultsTimeSec}
+            format={(v) => `${v.toFixed(2)}s`}
             tip="Time from first to last keystroke"
             accent
+            delay={TIMING.timeDelay}
+            duration={TIMING.statDuration}
           />
         </div>
 
-        <Separator className="opacity-30" />
+        <motion.div
+          initial={{ opacity: 0, scaleX: 0 }}
+          animate={{ opacity: 1, scaleX: 1 }}
+          transition={{ duration: 0.4, delay: TIMING.secondaryStatsDelay / 1000 }}
+        >
+          <Separator className="opacity-30" />
+        </motion.div>
 
         {/* Secondary stats */}
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-          <Stat
+          <AnimatedStat
             label="Raw WPM"
-            value={(runStats?.rawWpm ?? 0).toFixed(1)}
+            value={runStats?.rawWpm ?? 0}
+            format={(v) => v.toFixed(1)}
             tip="All typed chars / 5 / min"
+            delay={TIMING.secondaryStatsDelay}
           />
-          <Stat
+          <AnimatedStat
             label="Mistakes"
-            value={`${runStats?.mistakes ?? 0}`}
+            value={runStats?.mistakes ?? 0}
+            format={(v) => v.toFixed(0)}
             tip="Wrong keystrokes"
+            delay={TIMING.secondaryStatsDelay + 50}
           />
-          <Stat
+          <AnimatedStat
             label="Backspaces"
-            value={`${runStats?.backspaces ?? 0}`}
+            value={runStats?.backspaces ?? 0}
+            format={(v) => v.toFixed(0)}
             tip="Times you pressed backspace"
+            delay={TIMING.secondaryStatsDelay + 100}
           />
-          <Stat
+          <AnimatedStat
             label="Consistency"
-            value={runStats?.consistency != null ? `${runStats.consistency}%` : "—"}
+            value={runStats?.consistency != null ? runStats.consistency : "—"}
+            format={(v) => `${v.toFixed(0)}%`}
             tip="Typing rhythm score"
+            delay={TIMING.secondaryStatsDelay + 150}
           />
-          <Stat
+          <AnimatedStat
             label="First key"
-            value={
-              runStats?.timeToFirstKeyMs != null
-                ? `${runStats.timeToFirstKeyMs}ms`
-                : "—"
-            }
+            value={runStats?.timeToFirstKeyMs != null ? runStats.timeToFirstKeyMs : "—"}
+            format={(v) => `${v.toFixed(0)}ms`}
             tip="Time until first keystroke"
+            delay={TIMING.secondaryStatsDelay + 200}
           />
-          <Stat label="Chars" value={resultsRun} tip="Correct / target characters" />
+          <AnimatedStat
+            label="Chars"
+            value={correctChars}
+            format={(v) => `${v.toFixed(0)} / ${targetChars}`}
+            tip="Correct / target characters"
+            delay={TIMING.secondaryStatsDelay + 250}
+          />
         </div>
 
         {/* Score footer */}
-        <Tip tip="Combined score based on WPM and accuracy">
-          <div className="rounded-lg bg-primary/10 px-4 py-3 text-center">
-            <span className="font-mono text-2xl font-bold text-primary">
-              {resultsScore.toFixed(0)}
-            </span>
-            <span className="ml-2 font-mono text-xs text-muted-foreground">score</span>
-          </div>
-        </Tip>
+        <AnimatedScore
+          score={resultsScore}
+          delay={TIMING.scoreDelay}
+          duration={TIMING.scoreDuration}
+        />
 
-        {/* Code snippet display */}
-        <div className="flex rounded-lg cursor-default select-none border border-border/40 bg-muted/50 font-mono text-sm leading-relaxed text-foreground/90 overflow-hidden">
-          {/* Line numbers gutter */}
-          <div
-            className="shrink-0 border-r border-border/30 bg-muted/70 px-3 py-4 text-right text-muted-foreground/40"
-            aria-hidden="true"
-          >
-            {targetLines.map((_, i) => (
-              <div key={i} className="leading-relaxed">
-                {i + 1}
-              </div>
-            ))}
-          </div>
-          {/* Code content */}
-          <pre className="flex-1 whitespace-pre-wrap p-4 m-0">{target}</pre>
-        </div>
+        {/* Code snippet with typewriter effect */}
+        <TypewriterCode
+          code={target}
+          startDelay={TIMING.codeDelay}
+          speed={TIMING.codeSpeed}
+        />
       </div>
     </section>
   )
 }
-
-function StatCard({
-  label,
-  value,
-  tip,
-  accent,
-}: {
-  label: string
-  value: string
-  tip?: string
-  accent?: boolean
-}) {
-  const content = (
-    <div className="rounded-xl border border-border/30 bg-muted/40 p-4 text-center">
-      <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70">
-        {label}
-      </div>
-      <div
-        className={`mt-1 font-mono text-2xl font-bold ${
-          accent ? "text-primary" : "text-foreground"
-        }`}
-      >
-        {value}
-      </div>
-    </div>
-  )
-  return tip ? <Tip tip={tip}>{content}</Tip> : content
-}
-
-function Stat({ label, value, tip }: { label: string; value: string; tip?: string }) {
-  const content = (
-    <div className="flex items-center justify-between rounded-md bg-muted/30 px-3 py-2">
-      <span className="font-mono text-xs text-muted-foreground/70">{label}</span>
-      <span className="font-mono text-sm font-medium text-foreground/80">{value}</span>
-    </div>
-  )
-  return tip ? <Tip tip={tip}>{content}</Tip> : content
-}
-
