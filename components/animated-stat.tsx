@@ -41,7 +41,7 @@ export function AnimatedStatCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: delay / 1000 }}
-      className="rounded-xl border border-border/30 bg-muted/40 p-4 text-center"
+      className="rounded-lg border border-border/30 bg-card p-4 text-center"
     >
       <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70">
         {label}
@@ -98,7 +98,7 @@ export function AnimatedStat({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3, delay: delay / 1000 }}
-      className="flex items-center justify-between rounded-md bg-muted/30 px-3 py-2"
+      className="flex items-center justify-between rounded-lg bg-card px-3 py-2"
     >
       <span className="font-mono text-xs text-muted-foreground/70">{label}</span>
       <motion.span className="font-mono text-sm font-medium text-foreground/80">
@@ -135,12 +135,12 @@ export function AnimatedScore({ score, delay = 0, duration = 1000 }: AnimatedSco
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4, delay: delay / 1000 }}
-        className="rounded-lg bg-primary/10 px-4 py-3 text-center"
+        className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-center"
       >
         <motion.span className="font-mono text-2xl font-bold text-primary">
           {displayed}
         </motion.span>
-        <span className="ml-2 font-mono text-xs text-muted-foreground">score</span>
+        <span className="ml-2 font-mono text-xs text-accent-foreground">score</span>
       </motion.div>
     </Tip>
   )

@@ -1,5 +1,6 @@
 import Link from "next/link"
 import Tip from "@/components/tip"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { KDBGameControl } from "@/lib/hooks/use-game-controls"
 import { cn } from "@/lib/utils"
 
@@ -39,6 +40,10 @@ export function GameTitle({ className }: { className?: string }) {
                   <span className="text-xs">Next (results)</span>
                   <KDBGameControl type="next-game" />
                 </div>
+              </div>
+              <div className="flex items-center justify-between gap-4 border-t border-border/50 pt-2">
+                <span className="text-xs">Theme</span>
+                <ThemeToggle />
               </div>
             </div>
           }

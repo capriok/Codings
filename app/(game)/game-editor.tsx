@@ -142,7 +142,7 @@ export function GameEditor({ target, onProgress, onRedo, disabled }: EditorProps
   const remaining = target.slice(typed.length)
 
   return (
-    <div className="flex w-full flex-col gap-2">
+    <div className="flex w-full flex-col gap-1.5">
       <div className="relative w-full">
         <div
           ref={containerRef}
@@ -156,12 +156,12 @@ export function GameEditor({ target, onProgress, onRedo, disabled }: EditorProps
             `flex w-full rounded-lg border-2 font-mono text-sm leading-relaxed outline-none transition-all duration-150 focus:ring-2 focus:ring-primary/20 ` +
             (error
               ? "border-destructive/60 bg-destructive/5"
-              : "border-border/50 bg-muted/30 focus:border-primary/40")
+              : "border-border/30 bg-card focus:border-primary/40")
           }
         >
           {/* Line numbers gutter */}
           <div
-            className="shrink-0 select-none border-r border-border/30 bg-muted/50 px-3 py-4 text-right text-muted-foreground/40"
+            className="shrink-0 select-none border-r border-border/20 bg-muted/30 px-3 py-4 text-right text-muted-foreground/40"
             aria-hidden="true"
           >
             {Array.from({ length: lineCount }, (_, i) => (

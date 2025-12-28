@@ -152,7 +152,7 @@ function ScoringModeToggle({
   }
 
   return (
-    <div className="flex items-center rounded-md border border-border/40 h-[28px] bg-muted/30 p-0.5">
+    <div className="flex items-center rounded-lg border border-border/30 h-[28px] bg-card p-0.5">
       {options.map((mode) => (
         <Tip key={mode} tip={tips[mode]} align="start">
           <button

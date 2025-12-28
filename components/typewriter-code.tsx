@@ -61,11 +61,11 @@ export default function TypewriterCode({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: startDelay / 1000 }}
-      className="flex rounded-lg cursor-default select-none border border-border/40 bg-muted/50 font-mono text-sm leading-relaxed text-foreground/90 overflow-hidden"
+      className="flex rounded-lg cursor-default select-none border border-border/30 bg-card font-mono text-sm leading-relaxed text-foreground/90 overflow-hidden"
     >
       {/* Line numbers gutter */}
       <div
-        className="shrink-0 border-r border-border/30 bg-muted/70 px-3 py-4 text-right text-muted-foreground/40"
+        className="shrink-0 border-r border-border/20 bg-muted/30 px-3 py-4 text-right text-muted-foreground/40"
         aria-hidden="true"
       >
         {lines.map((_, i) => (

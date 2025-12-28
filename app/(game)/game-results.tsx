@@ -47,7 +47,7 @@ export default function GameResults({
 
   return (
     <section className="w-full select-none">
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4">
         {/* Header with badges and redo */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -57,23 +57,23 @@ export default function GameResults({
         >
           <div className="flex flex-wrap items-center gap-2">
             <Tip tip="Number of lines in snippet" align="start">
-              <Badge variant="secondary" className="font-mono text-xs">
+              <Badge variant="default-outline" className="font-mono text-xs">
                 {prompt.lines} {prompt.lines === 1 ? "Line" : "Lines"}
               </Badge>
             </Tip>
             <Tip tip="Programming language" align="start">
-              <Badge variant="outline" className="font-mono text-xs">
+              <Badge variant="default-outline" className="font-mono text-xs">
                 {prompt.language.toUpperCase()}
               </Badge>
             </Tip>
             <Tip tip="Snippet difficulty" align="start">
-              <Badge variant="outline" className="font-mono text-xs capitalize">
+              <Badge variant="default-outline" className="font-mono text-xs capitalize">
                 {formatDifficulty(prompt.difficulty)}
               </Badge>
             </Tip>
             {scoringMode && (
               <Tip tip="Scoring mode" align="start">
-                <Badge variant="outline" className="font-mono text-xs capitalize">
+                <Badge variant="default-outline" className="font-mono text-xs capitalize">
                   {scoringMode}
                 </Badge>
               </Tip>
@@ -158,7 +158,7 @@ export default function GameResults({
             delay={TIMING.secondaryStatsDelay + 100}
           />
           <Tip tip="Top keys you struggled with" align="start">
-            <div className="flex items-center justify-between rounded-md bg-muted/30 px-3 py-2">
+            <div className="flex items-center justify-between rounded-lg bg-card px-3 py-2">
               <span className="font-mono text-xs text-muted-foreground/70">Problem Keys</span>
               <div className="font-mono text-sm font-medium text-foreground/80 flex gap-1">
                 {runStats?.problemKeys && runStats.problemKeys.length > 0

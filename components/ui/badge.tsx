@@ -9,9 +9,22 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
+        // Primary
+        default: "bg-primary/20 text-primary [a]:hover:bg-primary/30",
+        "default-outline": "border-primary/40 bg-card/40 text-primary [a]:hover:bg-primary/20",
+        // Secondary
         secondary: "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
-        destructive: "bg-destructive/10 [a]:hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-destructive dark:bg-destructive/20",
+        "secondary-outline": "border-secondary bg-secondary/20 text-secondary-foreground [a]:hover:bg-secondary/30",
+        // Destructive
+        destructive: "bg-destructive/20 text-destructive [a]:hover:bg-destructive/30 dark:bg-destructive/20",
+        "destructive-outline": "border-destructive/40 bg-card/40 text-destructive [a]:hover:bg-destructive/20",
+        // Success
+        success: "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 [a]:hover:bg-emerald-500/30",
+        "success-outline": "border-emerald-500/40 bg bg-card/40 text-emerald-600 dark:text-emerald-400 [a]:hover:bg-emerald-500/20",
+        // Warning
+        warning: "bg-amber-500/20 text-amber-600 dark:text-amber-400 [a]:hover:bg-amber-500/30",
+        "warning-outline": "border-amber-500/40 bg bg-card/40 text-amber-600 dark:text-amber-400 [a]:hover:bg-amber-500/20",
+        // Utility variants
         outline: "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
         ghost: "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline",
