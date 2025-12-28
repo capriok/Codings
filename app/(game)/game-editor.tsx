@@ -74,6 +74,7 @@ export function GameEditor({ target, onProgress, onRedo, disabled }: EditorProps
           totalTypedCharacters: totalTyped,
           error: false,
           keystrokeTs: now,
+          isErrorRecovery: true,
         })
       }
       return
@@ -131,6 +132,7 @@ export function GameEditor({ target, onProgress, onRedo, disabled }: EditorProps
           totalTypedCharacters: newTotal,
           error: true,
           keystrokeTs: now,
+          expectedChar: expectedChar,
         })
         return newTotal
       })

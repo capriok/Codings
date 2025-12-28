@@ -36,6 +36,44 @@ export function computeWpm(chars: number, durationMs: number): number {
 }
 
 /**
+ * Get top N problem keys sorted by error count.
+ */
+function getTopProblemKeys(
+  problemKeyErrors: Map<string, number>,
+  n: number
+): string[] {
+  return Array.from(problemKeyErrors.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, n)
+    .map(([key]) => key)
+}
+
+/**
+ * Compute average of an array of numbers.
+ */
+function computeAverage(values: number[]): number | null {
+  if (values.length === 0) return null
+  return values.reduce((a, b) => a + b, 0) / values.length
+}
+
+/**
+ * Compute longest pause between consecutive keystrokes.
+ */
+function computeLongestPause(timestamps: number[]): number | null {
+  if (timestamps.length < 2) return null
+
+  let longest = 0
+  for (let i = 1; i < timestamps.length; i++) {
+    const pause = timestamps[i]! - timestamps[i - 1]!
+    if (pause > longest) {
+      longest = pause
+    }
+  }
+
+  return longest > 0 ? longest : null
+}
+
+/**
  * Compute all run statistics after a typing session completes.
  */
 export function computeRunStats(params: {
@@ -45,7 +83,10 @@ export function computeRunStats(params: {
   durationMs: number
   backspaces: number
   keystrokes: number[]
+  progressKeystrokes: number[]
   timeToFirstKeyMs: number | null
+  problemKeyErrors: Map<string, number>
+  correctionLatencies: number[]
 }): RunStats {
   const {
     correctChars,
@@ -54,7 +95,10 @@ export function computeRunStats(params: {
     durationMs,
     backspaces,
     keystrokes,
+    progressKeystrokes,
     timeToFirstKeyMs,
+    problemKeyErrors,
+    correctionLatencies,
   } = params
 
   const mistakes = Math.max(0, totalTypedChars - correctChars)
@@ -74,5 +118,8 @@ export function computeRunStats(params: {
     correctWpm,
     accuracy,
     consistency: computeConsistency(keystrokes),
+    problemKeys: getTopProblemKeys(problemKeyErrors, 3),
+    longestPauseMs: computeLongestPause(progressKeystrokes),
+    avgCorrectionLatencyMs: computeAverage(correctionLatencies),
   }
 }

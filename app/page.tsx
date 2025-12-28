@@ -17,8 +17,6 @@ export default function Page() {
     target,
     score,
     runStats,
-    liveTimeMs,
-    progressLeft,
     length,
     setLength,
     difficulty,
@@ -61,8 +59,6 @@ export default function Page() {
         <GameSession
           prompt={prompt}
           target={target}
-          liveTimeMs={liveTimeMs}
-          progressLeft={progressLeft}
           editorKey={editorKey}
           length={length}
           onProgress={onProgress}
@@ -74,7 +70,6 @@ export default function Page() {
         <GameResults
           prompt={prompt}
           target={target}
-          progressLeft={progressLeft}
           score={score}
           runStats={runStats}
           scoringMode={scoringMode}

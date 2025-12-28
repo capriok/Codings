@@ -24,6 +24,10 @@ export interface RunStats {
   correctWpm: number
   accuracy: number // 0..1
   consistency: number | null // 0..100
+  // New metrics
+  problemKeys: string[] // Top 3 keys that caused errors (most problematic first)
+  longestPauseMs: number | null // Longest pause between keystrokes after starting
+  avgCorrectionLatencyMs: number | null // Average time to press backspace after error
 }
 
 export interface GameResult {
@@ -51,6 +55,8 @@ export interface EditorProgress {
   totalTypedCharacters: number
   error: boolean
   keystrokeTs: number
+  expectedChar?: string // The character that was expected (set when error is true)
+  isErrorRecovery?: boolean // True when backspace clears an error state
 }
 
 export type Screen = "home" | "game" | "results"

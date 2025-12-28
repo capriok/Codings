@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useEffect, useMemo } from "react"
+import { use, useEffect } from "react"
 import Link from "next/link"
 import GameLayout, { GameTitle } from "@/app/(game)/game-layout"
 import GameResults from "@/app/(game)/game-results"
@@ -13,7 +13,7 @@ export default function ResultsPage({
   params: Promise<{ encoded: string }>
 }) {
   const { encoded } = use(params)
-  const result = useMemo(() => decodeResult(encoded), [encoded])
+  const result = decodeResult(encoded)
 
   if (!result) {
     return (
@@ -29,7 +29,6 @@ export default function ResultsPage({
   }
 
   const { prompt, runStats, score, scoringMode } = result
-  const progressLeft = `${runStats.correctChars} / ${runStats.targetChars}`
 
   // Ctrl/Cmd + Enter to go again
   useEffect(() => {
@@ -49,7 +48,6 @@ export default function ResultsPage({
       <GameResults
         prompt={prompt}
         target={prompt.code}
-        progressLeft={progressLeft}
         score={score}
         runStats={runStats}
         scoringMode={scoringMode}

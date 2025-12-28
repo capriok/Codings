@@ -129,13 +129,33 @@ export function useGame() {
         setStartMs(info.keystrokeTs)
       }
 
-      // Track backspaces
+      // Record progress keystroke (only forward progress, for pause tracking)
+      // Must check before prevTypedLen is updated
+      const isForwardProgress = !info.error && info.typed.length > session.prevTypedLen
+      if (isForwardProgress) {
+        session.progressKeystrokes.push(info.keystrokeTs)
+      }
+
+      // Track backspaces and correction latency
       if (info.typed.length < session.prevTypedLen) {
         session.backspaces += session.prevTypedLen - info.typed.length
       }
+      // Track error recovery (backspace after error)
+      if (info.isErrorRecovery && session.errorTs !== null) {
+        const latency = info.keystrokeTs - session.errorTs
+        session.correctionLatencies.push(latency)
+        session.errorTs = null
+      }
       session.prevTypedLen = info.typed.length
 
-      // Record keystroke
+      // Track problem keys (record expected char when error occurs)
+      if (info.error && info.expectedChar) {
+        const count = session.problemKeyErrors.get(info.expectedChar) ?? 0
+        session.problemKeyErrors.set(info.expectedChar, count + 1)
+        session.errorTs = info.keystrokeTs
+      }
+
+      // Record keystroke (all keystrokes for consistency)
       session.keystrokes.push(info.keystrokeTs)
 
       // Update React state
@@ -159,7 +179,10 @@ export function useGame() {
           durationMs,
           backspaces: session.backspaces,
           keystrokes: session.keystrokes,
+          progressKeystrokes: session.progressKeystrokes,
           timeToFirstKeyMs,
+          problemKeyErrors: session.problemKeyErrors,
+          correctionLatencies: session.correctionLatencies,
         })
 
         setRunStats(stats)

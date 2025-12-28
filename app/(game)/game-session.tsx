@@ -2,14 +2,11 @@
 
 import { useMemo } from "react"
 import GameEditor from "@/app/(game)/game-editor"
-import Tip from "@/components/tip"
 import type { EditorProgress, Prompt } from "@/lib/types"
 
 export default function GameSession({
   prompt,
   target,
-  liveTimeMs,
-  progressLeft,
   editorKey,
   length,
   onProgress,
@@ -17,8 +14,6 @@ export default function GameSession({
 }: {
   prompt: Prompt
   target: string
-  liveTimeMs: number
-  progressLeft: string
   editorKey: number
   length: number
   onProgress: (info: EditorProgress) => void
@@ -30,20 +25,6 @@ export default function GameSession({
   return (
     <section className="w-full select-none">
       <div className="flex flex-col gap-5 ">
-        {/* Progress indicator */}
-        <div className="flex items-center justify-between">
-          <Tip tip="Characters typed / total" align="start">
-            <span className="font-mono text-xs tracking-wide text-muted-foreground/80">
-              {progressLeft}
-            </span>
-          </Tip>
-          <Tip tip="Elapsed time" align="end">
-            <span className="font-mono text-xs text-muted-foreground/50">
-              {(liveTimeMs / 1000).toFixed(1)}s
-            </span>
-          </Tip>
-        </div>
-
         {/* Target code display */}
         <div className="flex rounded-lg cursor-default select-none border border-border/40 bg-muted/50 font-mono text-sm leading-relaxed text-foreground/90 overflow-hidden">
           {/* Line numbers gutter */}

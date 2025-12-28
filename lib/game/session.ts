@@ -9,10 +9,18 @@ export interface SessionRefs {
   firstRenderMs: number
   /** All keystroke timestamps for consistency calculation */
   keystrokes: number[]
+  /** Forward-progress keystroke timestamps for pause tracking (excludes backspaces/errors) */
+  progressKeystrokes: number[]
   /** Number of backspace presses */
   backspaces: number
   /** Previous typed length (to detect backspaces) */
   prevTypedLen: number
+  /** Map of expected char -> error count for problem keys tracking */
+  problemKeyErrors: Map<string, number>
+  /** Timestamp when the current error occurred (for correction latency) */
+  errorTs: number | null
+  /** Array of correction latencies (time from error to backspace) */
+  correctionLatencies: number[]
 }
 
 /**
@@ -23,8 +31,12 @@ export function createSessionRefs(): SessionRefs {
     startMs: null,
     firstRenderMs: Date.now(),
     keystrokes: [],
+    progressKeystrokes: [],
     backspaces: 0,
     prevTypedLen: 0,
+    problemKeyErrors: new Map(),
+    errorTs: null,
+    correctionLatencies: [],
   }
 }
 
@@ -36,6 +48,10 @@ export function resetSessionRefs(refs: SessionRefs): void {
   refs.startMs = null
   refs.firstRenderMs = Date.now()
   refs.keystrokes = []
+  refs.progressKeystrokes = []
   refs.backspaces = 0
   refs.prevTypedLen = 0
+  refs.problemKeyErrors = new Map()
+  refs.errorTs = null
+  refs.correctionLatencies = []
 }
