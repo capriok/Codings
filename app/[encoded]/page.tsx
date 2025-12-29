@@ -28,7 +28,7 @@ export default function ResultsPage({
     )
   }
 
-  const { prompt, runStats, score, scoringMode } = result
+  const { prompt, runStats, score } = result
 
   // Ctrl/Cmd + Enter to go again
   useEffect(() => {
@@ -50,7 +50,6 @@ export default function ResultsPage({
         target={prompt.code}
         score={score}
         runStats={runStats}
-        scoringMode={scoringMode}
         onNewSnippet={() => {
           window.location.href = "/"
         }}

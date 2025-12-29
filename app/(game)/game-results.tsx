@@ -9,7 +9,7 @@ import { AnimatedStatCard, AnimatedStat, AnimatedScore } from "@/components/anim
 import TypewriterCode from "@/components/typewriter-code"
 import { KDBGameControl } from "@/lib/hooks/use-game-controls"
 import { formatDifficulty } from "@/lib/utils"
-import type { Prompt, RunStats, ServerScoreResponse, ScoringMode } from "@/lib/types"
+import type { Prompt, RunStats, ServerScoreResponse } from "@/lib/types"
 
 // Animation timing constants (in ms)
 const TIMING = {
@@ -30,14 +30,12 @@ export default function GameResults({
   target,
   score,
   runStats,
-  scoringMode,
   onNewSnippet,
 }: {
   prompt: Prompt
   target: string
   score: ServerScoreResponse | null
   runStats: RunStats | null
-  scoringMode?: ScoringMode
   onNewSnippet: () => void
 }) {
   const resultsCorrectWpm = score?.cWPM ?? runStats?.correctWpm ?? 0
@@ -71,13 +69,6 @@ export default function GameResults({
                 {formatDifficulty(prompt.difficulty)}
               </Badge>
             </Tip>
-            {scoringMode && (
-              <Tip tip="Scoring mode" align="start">
-                <Badge variant="default-outline" className="font-mono text-xs capitalize">
-                  {scoringMode}
-                </Badge>
-              </Tip>
-            )}
           </div>
           <Button
             type="button"

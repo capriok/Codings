@@ -1,4 +1,4 @@
-import type { Difficulty, Language, Prompt, PromptLines, RunStats, ServerScoreResponse, ScoringMode } from "@/lib/types"
+import type { Difficulty, Language, Prompt, PromptLines, RunStats, ServerScoreResponse } from "@/lib/types"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Compact Payload Types (short keys for smaller URLs)
@@ -17,7 +17,6 @@ interface CompactStats {
   a: number        // accuracy (0..1)
   t: number        // durationMs
   sc: number       // score
-  sm?: ScoringMode // scoringMode
 }
 
 interface CompactRunExtras {
@@ -51,8 +50,7 @@ interface ResultPayload {
 export function encodeResult(
   prompt: Prompt,
   runStats: RunStats,
-  score: ServerScoreResponse | null,
-  scoringMode?: ScoringMode
+  score: ServerScoreResponse | null
 ): string {
   const payload: ResultPayload = {
     p: {
@@ -67,7 +65,6 @@ export function encodeResult(
       a: Math.round(runStats.accuracy * 1000) / 1000,
       t: Math.round(runStats.durationMs),
       sc: score?.score ?? 0,
-      sm: scoringMode,
     },
     r: {
       rw: Math.round(runStats.rawWpm * 10) / 10,
@@ -98,7 +95,6 @@ export function decodeResult(encoded: string): {
   prompt: Prompt
   runStats: RunStats
   score: ServerScoreResponse
-  scoringMode?: ScoringMode
 } | null {
   try {
     // Restore standard base64 from URL-safe encoding
@@ -142,7 +138,7 @@ export function decodeResult(encoded: string): {
       score: payload.s.sc,
     }
 
-    return { prompt, runStats, score, scoringMode: payload.s.sm }
+    return { prompt, runStats, score }
   } catch {
     return null
   }

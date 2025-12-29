@@ -1,5 +1,4 @@
 export type Difficulty = "easy" | "medium" | "hard"
-export type ScoringMode = "simple" | "tuned"
 export type Language = "ts"
 
 export type PromptLines = 1 | 2 | 3
@@ -34,11 +33,10 @@ export interface GameResult {
   correctCharacters: number
   totalTypedCharacters: number
   timeMs: number
-  // Extended fields for tuned scoring
+  // Extended fields for scoring multipliers
   difficulty?: Difficulty
   targetChars?: number
   consistency?: number | null
-  scoringMode?: ScoringMode
 }
 
 export interface ScoreBreakdown {

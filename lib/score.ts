@@ -1,4 +1,4 @@
-import type { Difficulty, ScoringMode } from "@/lib/types"
+import type { Difficulty } from "@/lib/types"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Constants
@@ -76,13 +76,9 @@ export interface ScoreInput {
   correctCharacters: number
   totalTypedCharacters: number
   timeMs: number
-}
-
-export interface ExtendedScoreInput extends ScoreInput {
   difficulty?: Difficulty
   targetChars?: number
   consistency?: number | null
-  scoringMode?: ScoringMode
 }
 
 export interface ScoreOutput {
@@ -92,23 +88,7 @@ export interface ScoreOutput {
 }
 
 /**
- * Compute simple score (original formula).
- * score = cWPM * accuracy
- */
-export function computeSimpleScore(input: ScoreInput): ScoreOutput {
-  const { correctCharacters, totalTypedCharacters } = input
-  const timeMs = Math.max(1, input.timeMs)
-
-  const cWPM = correctCharacters / 5 / (timeMs / 60000)
-  const accuracy =
-    totalTypedCharacters > 0 ? correctCharacters / totalTypedCharacters : 0
-  const score = cWPM * accuracy
-
-  return { cWPM, accuracy, score }
-}
-
-/**
- * Compute tuned score with all multipliers applied.
+ * Compute score with all multipliers applied.
  *
  * Formula:
  *   score = cWPM * effectiveAccuracy * difficultyMultiplier * consistencyMultiplier
@@ -119,7 +99,7 @@ export function computeSimpleScore(input: ScoreInput): ScoreOutput {
  *   - difficultyMultiplier = { easy: 1.0, medium: 1.15, hard: 1.35 }
  *   - consistencyMultiplier = 1 + (consistency/100)^2 * 0.20, capped at 1.20
  */
-export function computeTunedScore(input: ExtendedScoreInput): ScoreOutput {
+export function computeScore(input: ScoreInput): ScoreOutput {
   const {
     correctCharacters,
     totalTypedCharacters,
@@ -151,29 +131,3 @@ export function computeTunedScore(input: ExtendedScoreInput): ScoreOutput {
   }
 }
 
-/**
- * Compute score based on scoring mode.
- * - "simple": Original formula (cWPM * accuracy)
- * - "tuned": New formula with difficulty, consistency, and length bonuses
- */
-export function computeScore(input: ExtendedScoreInput): ScoreOutput {
-  const { scoringMode = "tuned" } = input
-
-  if (scoringMode === "simple") {
-    return computeSimpleScore(input)
-  }
-
-  return computeTunedScore(input)
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Legacy Support
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * @deprecated Use computeScore with ExtendedScoreInput instead.
- * Kept for backward compatibility.
- */
-export function computeScoreLegacy(input: ScoreInput): ScoreOutput {
-  return computeScore(input)
-}

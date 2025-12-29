@@ -1,17 +1,12 @@
 import { NextResponse } from "next/server"
 
 import { computeScore } from "@/lib/score"
-import type { Difficulty, GameResult, ScoringMode, ServerScoreResponse } from "@/lib/types"
+import type { Difficulty, GameResult, ServerScoreResponse } from "@/lib/types"
 
 const VALID_DIFFICULTIES = new Set<Difficulty>(["easy", "medium", "hard"])
-const VALID_SCORING_MODES = new Set<ScoringMode>(["simple", "tuned"])
 
 function isValidDifficulty(value: unknown): value is Difficulty {
   return typeof value === "string" && VALID_DIFFICULTIES.has(value as Difficulty)
-}
-
-function isValidScoringMode(value: unknown): value is ScoringMode {
-  return typeof value === "string" && VALID_SCORING_MODES.has(value as ScoringMode)
 }
 
 export async function POST(req: Request) {
@@ -56,10 +51,6 @@ export async function POST(req: Request) {
       ? Number(result.consistency)
       : null
 
-  const scoringMode = isValidScoringMode(result?.scoringMode)
-    ? result.scoringMode
-    : "tuned"
-
   const output: ServerScoreResponse = computeScore({
     correctCharacters,
     totalTypedCharacters,
@@ -67,7 +58,6 @@ export async function POST(req: Request) {
     difficulty,
     targetChars,
     consistency,
-    scoringMode,
   })
 
   return NextResponse.json(output)

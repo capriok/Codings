@@ -1,11 +1,10 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import type { GameLength, GameDifficulty, GameScoringMode } from "@/lib/hooks/use-game"
+import type { GameLength, GameDifficulty } from "@/lib/hooks/use-game"
 import { cn } from "@/lib/utils"
 import Tip from "@/components/ui/tip"
 import { KDBGameControl } from "@/lib/hooks/use-game-controls"
-import { SquareActivityIcon, SquareEqualIcon } from "lucide-react"
 
 export default function GameHeader({
   lengths,
@@ -14,9 +13,6 @@ export default function GameHeader({
   difficulties,
   difficulty,
   onDifficultyChange,
-  scoringModes,
-  scoringMode,
-  onScoringModeChange,
 }: {
   lengths: readonly GameLength[]
   length: GameLength
@@ -24,9 +20,6 @@ export default function GameHeader({
   difficulties: readonly GameDifficulty[]
   difficulty: GameDifficulty
   onDifficultyChange: (d: GameDifficulty) => void
-  scoringModes: readonly GameScoringMode[]
-  scoringMode: GameScoringMode
-  onScoringModeChange: (mode: GameScoringMode) => void
 }) {
   return (
     <header className="w-full select-none">
@@ -39,11 +32,6 @@ export default function GameHeader({
             onChange={onDifficultyChange}
           />
         </div>
-        <ScoringModeToggle
-          options={scoringModes}
-          value={scoringMode}
-          onChange={onScoringModeChange}
-        />
       </div>
     </header>
   )
@@ -129,46 +117,5 @@ function DifficultySelections({
         ))}
       </div>
     </Tip>
-  )
-}
-
-function ScoringModeToggle({
-  options,
-  value,
-  onChange,
-}: {
-  options: readonly GameScoringMode[]
-  value: GameScoringMode
-  onChange: (next: GameScoringMode) => void
-}) {
-  const labels: Record<GameScoringMode, React.ReactNode> = {
-    simple: <SquareEqualIcon size={16}/>,
-    tuned: <SquareActivityIcon size={16}/>,
-  }
-
-  const tips: Record<GameScoringMode, string> = {
-    simple: "WPM × accuracy only",
-    tuned: "Difficulty + consistency bonuses",
-  }
-
-  return (
-    <div className="flex items-center rounded-lg border border-border/30 h-[28px] bg-card p-0.5">
-      {options.map((mode) => (
-        <Tip key={mode} tip={tips[mode]} align="start">
-          <button
-            type="button"
-            onClick={() => onChange(mode)}
-            className={cn(
-              "px-2.5 py-1 cursor-pointer font-mono text-xs rounded transition-all",
-              mode === value
-                ? "bg-background text-primary shadow-sm"
-                : "text-muted-foreground/60 hover:text-foreground"
-            )}
-          >
-            {labels[mode]}
-          </button>
-        </Tip>
-      ))}
-    </div>
   )
 }

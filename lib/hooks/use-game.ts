@@ -19,7 +19,6 @@ import type {
   GameResult,
   RunStats,
   Screen,
-  ScoringMode,
   ServerScoreResponse,
 } from "@/lib/types"
 
@@ -33,9 +32,6 @@ export type GameLength = (typeof LENGTHS)[number]
 const DIFFICULTIES = ["easy", "medium", "hard"] as const satisfies readonly Difficulty[]
 export type GameDifficulty = (typeof DIFFICULTIES)[number]
 
-const SCORING_MODES = ["simple", "tuned"] as const satisfies readonly ScoringMode[]
-export type GameScoringMode = (typeof SCORING_MODES)[number]
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Hook
 // ─────────────────────────────────────────────────────────────────────────────
@@ -48,7 +44,6 @@ export function useGame() {
   // ─── Settings ────────────────────────────────────────────────────────────
   const [length, setLengthState] = useState<GameLength>(1)
   const [difficulty, setDifficultyState] = useState<GameDifficulty>("easy")
-  const [scoringMode, setScoringMode] = useState<GameScoringMode>("tuned")
 
   // ─── Prompt ──────────────────────────────────────────────────────────────
   const [promptIndex, setPromptIndex] = useState(() => findFirstPromptIndex(1, "easy"))
@@ -196,7 +191,6 @@ export function useGame() {
           difficulty,
           targetChars: target.length,
           consistency: stats.consistency,
-          scoringMode,
         }
 
         // Wait for encoding screen to paint, then submit and navigate
@@ -204,14 +198,14 @@ export function useGame() {
           void submitScore(result).then((serverScore) => {
             setScore(serverScore)
             // Encode result and navigate to shareable URL
-            const encoded = encodeResult(prompt, stats, serverScore, scoringMode)
+            const encoded = encodeResult(prompt, stats, serverScore)
             addResult(encoded)
             router.replace(`/${encoded}`)
           })
         })
       }
     },
-    [target.length, submitScore, difficulty, scoringMode, prompt, addResult, router]
+    [target.length, submitScore, difficulty, prompt, addResult, router]
   )
 
   // ─── Timer Effect ────────────────────────────────────────────────────────
@@ -231,7 +225,6 @@ export function useGame() {
     // Constants
     LENGTHS,
     DIFFICULTIES,
-    SCORING_MODES,
 
     // State
     screen,
@@ -250,8 +243,6 @@ export function useGame() {
     setLength,
     difficulty,
     setDifficulty,
-    scoringMode,
-    setScoringMode,
 
     // Actions
     onProgress,
