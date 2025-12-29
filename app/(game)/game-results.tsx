@@ -9,6 +9,7 @@ import { AnimatedStatCard, AnimatedStat, AnimatedScore } from "@/components/anim
 import TypewriterCode from "@/components/typewriter-code"
 import { KDBGameControl } from "@/lib/hooks/use-game-controls"
 import { formatDifficulty } from "@/lib/utils"
+import { RecentResultsDialog } from "@/components/recent-results-dialog"
 import type { Prompt, RunStats, ServerScoreResponse } from "@/lib/types"
 
 // Animation timing constants (in ms)
@@ -70,16 +71,19 @@ export default function GameResults({
               </Badge>
             </Tip>
           </div>
-          <Button
-            type="button"
-            onClick={onNewSnippet}
-            variant="secondary"
-            size="sm"
-            className="group font-mono text-xs gap-1.5"
-          >
-            Again
-            <KDBGameControl flat type="next-game" />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              onClick={onNewSnippet}
+              variant="secondary"
+              size="sm"
+              className="group font-mono text-xs gap-1.5"
+            >
+              Again
+              <KDBGameControl flat type="next-game" />
+            </Button>
+            <RecentResultsDialog />
+          </div>
         </motion.div>
         
         {/* Code snippet with typewriter effect */}

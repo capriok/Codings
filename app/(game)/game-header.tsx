@@ -5,6 +5,7 @@ import type { GameLength, GameDifficulty } from "@/lib/hooks/use-game"
 import { cn } from "@/lib/utils"
 import Tip from "@/components/ui/tip"
 import { KDBGameControl } from "@/lib/hooks/use-game-controls"
+import { RecentResultsDialog } from "@/components/recent-results-dialog"
 
 export default function GameHeader({
   lengths,
@@ -31,6 +32,9 @@ export default function GameHeader({
             value={difficulty}
             onChange={onDifficultyChange}
           />
+        </div>
+        <div className="flex items-center">
+          <RecentResultsDialog />
         </div>
       </div>
     </header>
