@@ -67,35 +67,41 @@ function ResultItem({
         "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
       )}
     >
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-4 whitespace-nowrap">
         {/* Left side: stats */}
         <div className="flex items-center gap-4 font-mono text-sm">
-          <Tip tip="WPM" side="bottom">
-            <span className="flex items-center gap-1.5 text-primary font-medium">
-              <Zap className="size-3.5" />
+          <Tip tip="Words per minute (corrected)" side="bottom">
+            <span className="flex items-center gap-1.5 text-primary font-medium w-12 tabular-nums">
+              <Zap className="size-3.5 shrink-0" />
               {Math.round(item.wpm)}
             </span>
           </Tip>
-          <Tip tip="Accuracy" side="bottom">
-            <span className="flex items-center gap-1.5 text-muted-foreground">
-              <Target className="size-3.5" />
+          <Tip tip="Typing accuracy %" side="bottom">
+            <span className="flex items-center gap-1.5 text-muted-foreground w-14 tabular-nums">
+              <Target className="size-3.5 shrink-0" />
               {(item.accuracy * 100).toFixed(0)}%
             </span>
           </Tip>
-          <span className="text-muted-foreground/60 text-xs">
-            {difficultyLabel(item.difficulty)} · {item.lines}L
-          </span>
+          <Tip tip="Difficulty level · Lines of code" side="bottom">
+            <span className="text-muted-foreground/60 text-xs w-24">
+              {difficultyLabel(item.difficulty)} · {item.lines}L
+            </span>
+          </Tip>
         </div>
 
         {/* Right side: time & score */}
-        <div className="flex items-center gap-3 text-xs">
-          <span className="font-mono font-medium text-foreground/80">
-            {item.score.toLocaleString()} pts
-          </span>
-          <span className="flex items-center gap-1 text-muted-foreground/50">
-            <Clock className="size-3" />
-            {formatTimeAgo(item.entry.timestamp)}
-          </span>
+        <div className="flex items-center gap-4 text-xs">
+          <Tip tip="Final score (WPM × accuracy × difficulty)" side="bottom">
+            <span className="font-mono font-medium text-foreground/80 w-20 text-right tabular-nums">
+              {item.score.toLocaleString()} pts
+            </span>
+          </Tip>
+          <Tip tip="Time since completed" side="bottom">
+            <span className="flex items-center gap-1 text-muted-foreground/50 w-16 justify-end">
+              <Clock className="size-3 shrink-0" />
+              {formatTimeAgo(item.entry.timestamp)}
+            </span>
+          </Tip>
         </div>
       </div>
     </button>
@@ -169,7 +175,7 @@ export function RecentResultsDialog() {
         </DialogTrigger>
       </Tip>
 
-      <DialogContent className="max-w-sm sm:max-w-md">
+      <DialogContent className="max-w-lg sm:max-w-lg">
         <DialogHeader className="pb-2">
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2 text-base">
