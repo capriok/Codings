@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip"
 
 export default function Tip({
   tip,

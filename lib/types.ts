@@ -59,4 +59,4 @@ export interface EditorProgress {
   isErrorRecovery?: boolean // True when backspace clears an error state
 }
 
-export type Screen = "home" | "game" | "results"
+export type Screen = "home" | "game" | "encoding" | "results"

@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react"
 import { SpaceIcon } from "lucide-react"
-import Tip from "@/components/tip"
+import Tip from "@/components/ui/tip"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { AnimatedStatCard, AnimatedStat, AnimatedScore } from "@/components/animated-stat"

@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import type { GameLength, GameDifficulty, GameScoringMode } from "@/lib/hooks/use-game"
 import { cn } from "@/lib/utils"
-import Tip from "@/components/tip"
+import Tip from "@/components/ui/tip"
 import { KDBGameControl } from "@/lib/hooks/use-game-controls"
 import { SquareActivityIcon, SquareEqualIcon } from "lucide-react"
 

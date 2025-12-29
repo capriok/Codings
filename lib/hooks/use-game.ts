@@ -186,7 +186,7 @@ export function useGame() {
         })
 
         setRunStats(stats)
-        setScreen("results")
+        setScreen("encoding")
 
         // Submit score with extended fields
         const result: GameResult = {
@@ -199,12 +199,15 @@ export function useGame() {
           scoringMode,
         }
 
-        void submitScore(result).then((serverScore) => {
-          setScore(serverScore)
-          // Encode result and navigate to shareable URL
-          const encoded = encodeResult(prompt, stats, serverScore, scoringMode)
-          addResult(encoded)
-          router.push(`/${encoded}`)
+        // Wait for encoding screen to paint, then submit and navigate
+        requestAnimationFrame(() => {
+          void submitScore(result).then((serverScore) => {
+            setScore(serverScore)
+            // Encode result and navigate to shareable URL
+            const encoded = encodeResult(prompt, stats, serverScore, scoringMode)
+            addResult(encoded)
+            router.replace(`/${encoded}`)
+          })
         })
       }
     },

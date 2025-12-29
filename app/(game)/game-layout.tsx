@@ -1,5 +1,5 @@
 import Link from "next/link"
-import Tip from "@/components/tip"
+import Tip from "@/components/ui/tip"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { KDBGameControl } from "@/lib/hooks/use-game-controls"
 import { cn } from "@/lib/utils"

@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useState } from "react"
 import type { GameDifficulty, GameLength } from "@/lib/hooks/use-game"
 import { Kbd } from "@/components/ui/kbd"
 import { CommandIcon, CornerDownLeftIcon } from "lucide-react"
@@ -89,9 +89,19 @@ const CONTROL_KEYS: Record<ControlType, React.ReactNode> = {
 }
 
 export function KDBGameControl({ type, flat }: { type: ControlType; flat?: boolean }) {
-  const isMac =
-    typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.userAgent)
-  const mod = isMac ? <CommandIcon className="size-3" /> : <span className="font-sans text-xs">Ctrl</span>
+  // Defer platform detection to avoid hydration mismatch
+  const [isMac, setIsMac] = useState<boolean | null>(null)
+  
+  useEffect(() => {
+    setIsMac(/Mac|iPhone|iPad/.test(navigator.userAgent))
+  }, [])
+
+  // Render nothing for mod key until client-side detection completes
+  const mod = isMac === null 
+    ? <span className="w-4" /> // placeholder to prevent layout shift
+    : isMac 
+      ? <CommandIcon className="size-3" /> 
+      : <span className="font-sans text-xs">Ctrl</span>
   const key = CONTROL_KEYS[type]
 
   const content = (

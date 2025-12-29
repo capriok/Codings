@@ -2,8 +2,8 @@
 
 import GameHeader from "@/app/(game)/game-header"
 import GameLayout, { GameTitle } from "@/app/(game)/game-layout"
-import GameResults from "@/app/(game)/game-results"
 import GameSession from "@/app/(game)/game-session"
+import { Spinner } from "@/components/spinner"
 import { useGame } from "@/lib/hooks/use-game"
 import { useGameControls } from "@/lib/hooks/use-game-controls"
 
@@ -15,8 +15,6 @@ export default function Page() {
     screen,
     prompt,
     target,
-    score,
-    runStats,
     length,
     setLength,
     difficulty,
@@ -36,7 +34,7 @@ export default function Page() {
     difficulty,
     setDifficulty,
     newSnippet,
-    enableEnterShortcut: screen === "results",
+    enableEnterShortcut: false,
   })
 
   return (
@@ -66,15 +64,10 @@ export default function Page() {
         />
       )}
 
-      {screen === "results" && (
-        <GameResults
-          prompt={prompt}
-          target={target}
-          score={score}
-          runStats={runStats}
-          scoringMode={scoringMode}
-          onNewSnippet={newSnippet}
-        />
+      {screen === "encoding" && (
+        <div className="flex min-h-[54px] w-full items-center justify-center">
+          <Spinner />
+        </div>
       )}
     </GameLayout>
   )

@@ -109,32 +109,28 @@ export function GameEditor({ target, onProgress, onRedo, disabled }: EditorProps
 
     if (keyChar === expectedChar) {
       const next = typed + keyChar
+      const newTotal = totalTyped + 1
       setTyped(next)
-      setTotalTyped((prev: number) => {
-        const newTotal = prev + 1
-        onProgress({
-          typed: next,
-          correctCharacters: next.length,
-          totalTypedCharacters: newTotal,
-          error: false,
-          keystrokeTs: now,
-        })
-        return newTotal
+      setTotalTyped(newTotal)
+      onProgress({
+        typed: next,
+        correctCharacters: next.length,
+        totalTypedCharacters: newTotal,
+        error: false,
+        keystrokeTs: now,
       })
     } else {
+      const newTotal = totalTyped + 1
       setError(true)
       setWrongChar(keyChar)
-      setTotalTyped((prev: number) => {
-        const newTotal = prev + 1
-        onProgress({
-          typed,
-          correctCharacters: typed.length,
-          totalTypedCharacters: newTotal,
-          error: true,
-          keystrokeTs: now,
-          expectedChar: expectedChar,
-        })
-        return newTotal
+      setTotalTyped(newTotal)
+      onProgress({
+        typed,
+        correctCharacters: typed.length,
+        totalTypedCharacters: newTotal,
+        error: true,
+        keystrokeTs: now,
+        expectedChar: expectedChar,
       })
     }
   }

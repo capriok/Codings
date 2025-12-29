@@ -1,8 +1,8 @@
 "use client"
 
 import { motion, useSpring, useTransform } from "motion/react"
-import { useEffect, type ReactNode } from "react"
-import Tip from "@/components/tip"
+import { useEffect } from "react"
+import Tip from "@/components/ui/tip"
 
 interface AnimatedStatCardProps {
   label: string
