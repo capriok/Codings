@@ -15,21 +15,6 @@ export default function ResultsPage({
   const { encoded } = use(params)
   const result = decodeResult(encoded)
 
-  if (!result) {
-    return (
-      <GameLayout>
-        <div className="flex flex-col items-center gap-4">
-          <p className="text-muted-foreground font-mono">Invalid or expired result link</p>
-          <Button asChild variant="secondary">
-            <Link href="/">Play</Link>
-          </Button>
-        </div>
-      </GameLayout>
-    )
-  }
-
-  const { prompt, runStats, score } = result
-
   // Ctrl/Cmd + Enter to go again
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -42,19 +27,38 @@ export default function ResultsPage({
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [])
 
+  if (!result) {
+    return (
+      <GameLayout>
+        <div className="flex flex-col items-center gap-4">
+          <p className="text-muted-foreground font-mono">
+            Invalid or expired result link
+          </p>
+          <Button asChild variant="secondary">
+            <Link href="/">Play</Link>
+          </Button>
+        </div>
+      </GameLayout>
+    )
+  }
+
+  const { prompt, runStats, score } = result
+
   return (
     <GameLayout>
       <GameTitle />
-      <GameResults
-        prompt={prompt}
-        target={prompt.code}
-        score={score}
-        runStats={runStats}
-        onNewSnippet={() => {
-          window.location.href = "/"
-        }}
-      />
+
+      <div className="flex flex-col justify-center items-center h-[40vh] md:h-[60vh] w-full">
+        <GameResults
+          prompt={prompt}
+          target={prompt.code}
+          score={score}
+          runStats={runStats}
+          onNewSnippet={() => {
+            window.location.href = "/"
+          }}
+        />
+      </div>
     </GameLayout>
   )
 }
-

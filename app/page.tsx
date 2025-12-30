@@ -38,7 +38,7 @@ export default function Page() {
     <GameLayout>
       <GameTitle />
 
-      <div className="flex flex-col justify-center items-center h-[40vh] md:h-[60vh] w-full">
+      <div className="flex flex-col justify-center items-center h-[40vh] md:h-[50vh] w-full">
         <GameHeader
           lengths={LENGTHS}
           length={length}
@@ -60,7 +60,7 @@ export default function Page() {
         )}
 
         {screen === "encoding" && (
-          <div className="flex min-h-[54px] w-full items-center justify-center">
+          <div className="flex min-h-[244px] w-full items-center justify-center">
             <Spinner />
           </div>
         )}
