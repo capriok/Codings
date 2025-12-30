@@ -38,7 +38,7 @@ export default function Page() {
     <GameLayout>
       <GameTitle />
 
-      <div className="flex flex-col justify-center items-center h-[60vh] w-full">
+      <div className="flex flex-col justify-center items-center h-[40vh] md:h-[60vh] w-full">
         <GameHeader
           lengths={LENGTHS}
           length={length}
