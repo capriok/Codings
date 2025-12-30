@@ -6,10 +6,8 @@ import { cn } from "@/lib/utils"
 
 export default function GameLayout({ children }: { children: React.ReactNode }) {
   return (
-      <main className="bg-background text-foreground flex flex-col items-center min-h-screen">
-      <div className="flex max-w-[800px] w-full flex-col">
-        {children}
-      </div>
+    <main className="bg-background text-foreground flex flex-col items-center min-h-screen">
+      <div className="flex max-w-200 w-full flex-col">{children}</div>
     </main>
   )
 }
@@ -56,5 +54,3 @@ export function GameTitle({ className }: { className?: string }) {
     </div>
   )
 }
-
-

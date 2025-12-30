@@ -38,31 +38,33 @@ export default function Page() {
     <GameLayout>
       <GameTitle />
 
-      <GameHeader
-        lengths={LENGTHS}
-        length={length}
-        onLengthChange={setLength}
-        difficulties={DIFFICULTIES}
-        difficulty={difficulty}
-        onDifficultyChange={setDifficulty}
-      />
-
-      {screen === "game" && (
-        <GameSession
-          prompt={prompt}
-          target={target}
-          editorKey={editorKey}
+      <div className="flex flex-col justify-center items-center h-[60vh] w-full">
+        <GameHeader
+          lengths={LENGTHS}
           length={length}
-          onProgress={onProgress}
-          onNewSnippet={newSnippet}
+          onLengthChange={setLength}
+          difficulties={DIFFICULTIES}
+          difficulty={difficulty}
+          onDifficultyChange={setDifficulty}
         />
-      )}
 
-      {screen === "encoding" && (
-        <div className="flex min-h-[54px] w-full items-center justify-center">
-          <Spinner />
-        </div>
-      )}
+        {screen === "game" && (
+          <GameSession
+            prompt={prompt}
+            target={target}
+            editorKey={editorKey}
+            length={length}
+            onProgress={onProgress}
+            onNewSnippet={newSnippet}
+          />
+        )}
+
+        {screen === "encoding" && (
+          <div className="flex min-h-[54px] w-full items-center justify-center">
+            <Spinner />
+          </div>
+        )}
+      </div>
     </GameLayout>
   )
 }
