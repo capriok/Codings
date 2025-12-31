@@ -36,9 +36,7 @@ export default function Page() {
 
   return (
     <GameLayout>
-      <GameTitle />
-
-      <div className="flex flex-col justify-center items-center h-[40vh] md:h-[50vh] w-full">
+      
         <GameHeader
           lengths={LENGTHS}
           length={length}
@@ -64,7 +62,6 @@ export default function Page() {
             <Spinner />
           </div>
         )}
-      </div>
     </GameLayout>
   )
 }

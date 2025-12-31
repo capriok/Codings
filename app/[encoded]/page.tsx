@@ -46,19 +46,15 @@ export default function ResultsPage({
 
   return (
     <GameLayout>
-      <GameTitle />
-
-      <div className="flex flex-col justify-center items-center h-[40vh] md:h-[60vh] w-full">
-        <GameResults
-          prompt={prompt}
-          target={prompt.code}
-          score={score}
-          runStats={runStats}
-          onNewSnippet={() => {
-            window.location.href = "/"
-          }}
-        />
-      </div>
+      <GameResults
+        prompt={prompt}
+        target={prompt.code}
+        score={score}
+        runStats={runStats}
+        onNewSnippet={() => {
+          window.location.href = "/"
+        }}
+      />
     </GameLayout>
   )
 }

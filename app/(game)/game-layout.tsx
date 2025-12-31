@@ -7,7 +7,10 @@ import { cn } from "@/lib/utils"
 export default function GameLayout({ children }: { children: React.ReactNode }) {
   return (
     <main className="bg-background text-foreground flex flex-col items-center min-h-screen">
-      <div className="flex max-w-200 w-full flex-col px-2 md:px-0">{children}</div>
+      <GameTitle />
+      <div className="flex max-w-200 w-full flex-col px-2 md:px-0 justify-center items-center mt-16 md:6 w-full">
+        {children}
+      </div>
     </main>
   )
 }
