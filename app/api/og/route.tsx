@@ -69,24 +69,11 @@ export async function GET() {
           </div>
         </div>
 
-        {/* Decorative cursor blink indicator */}
-        <div
-          tw="absolute bottom-12 flex items-center"
-          style={{ fontFamily: "GeistMono" }}
-        >
-          <div
-            tw="w-3 h-8 mr-2"
-            style={{ background: "#dc5040" }}
-          />
-          <span tw="text-xl" style={{ color: "#52525b" }}>
-            ready to type...
-          </span>
-        </div>
       </div>
     ),
     {
       width: 1200,
-      height: 630,
+      height: 320,
       fonts: [
         {
           name: "GeistMono",
