@@ -16,6 +16,24 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Codings",
   description: "Codings is a typing game that helps you improve your coding speed and accuracy.",
+  openGraph: {
+    title: "codings_",
+    description: "Type faster. Code better. A typing game for developers.",
+    images: [
+      {
+        url: "/api/og",
+        width: 1200,
+        height: 630,
+        alt: "codings_ - A typing game for developers",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "codings_",
+    description: "Type faster. Code better. A typing game for developers.",
+    images: ["/api/og"],
+  },
 }
 
 export default function RootLayout({
