@@ -37,9 +37,7 @@ export async function POST(req: Request) {
   }
 
   // Optional extended fields
-  const difficulty = isValidDifficulty(result?.difficulty)
-    ? result.difficulty
-    : "easy"
+  const difficulty = isValidDifficulty(result?.difficulty) ? result.difficulty : "easy"
 
   const targetChars =
     result?.targetChars != null && Number.isFinite(Number(result.targetChars))

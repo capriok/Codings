@@ -1,11 +1,11 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import type { GameLength, GameDifficulty } from "@/lib/hooks/use-game"
-import { cn } from "@/lib/utils"
-import Tip from "@/components/ui/tip"
-import { KDBGameControl } from "@/lib/hooks/use-game-controls"
 import { RecentResultsDialog } from "@/components/recent-results-dialog"
+import { Button } from "@/components/ui/button"
+import Tip from "@/components/ui/tip"
+import type { GameDifficulty, GameLength } from "@/lib/hooks/use-game"
+import { KDBGameControl } from "@/lib/hooks/use-game-controls"
+import { cn } from "@/lib/utils"
 
 export default function GameHeader({
   lengths,

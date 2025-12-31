@@ -1,8 +1,9 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { Clock, History, Target, Zap } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { History, Clock, Zap, Target, Trash2 } from "lucide-react"
+import { useMemo, useState } from "react"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -10,12 +11,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { useResultHistory, type HistoryEntry } from "@/lib/hooks/use-result-history"
-import { decodeResult } from "@/lib/result-codec"
-import { cn } from "@/lib/utils"
 import Tip from "@/components/ui/tip"
+import { type HistoryEntry, useResultHistory } from "@/lib/hooks/use-result-history"
+import { decodeResult } from "@/lib/result-codec"
 import type { Difficulty, PromptLines } from "@/lib/types"
+import { cn } from "@/lib/utils"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -51,13 +51,7 @@ function difficultyLabel(d: string): string {
 // Result Item Component
 // ─────────────────────────────────────────────────────────────────────────────
 
-function ResultItem({
-  item,
-  onSelect,
-}: {
-  item: DecodedEntry
-  onSelect: () => void
-}) {
+function ResultItem({ item, onSelect }: { item: DecodedEntry; onSelect: () => void }) {
   return (
     <button
       onClick={onSelect}
@@ -117,9 +111,7 @@ function EmptyState() {
     <div className="flex flex-col items-center justify-center py-8 text-center">
       <History className="size-10 text-muted-foreground/30 mb-3" />
       <p className="text-sm text-muted-foreground">No recent results</p>
-      <p className="text-xs text-muted-foreground/60 mt-1">
-        Complete a game to see it here
-      </p>
+      <p className="text-xs text-muted-foreground/60 mt-1">Complete a game to see it here</p>
     </div>
   )
 }
@@ -156,7 +148,7 @@ export function RecentResultsDialog() {
     router.push(`/${encoded}`)
   }
 
-  const handleClear = () => {
+  const _handleClear = () => {
     clearHistory()
   }
 
@@ -224,4 +216,3 @@ export function RecentResultsDialog() {
 }
 
 export default RecentResultsDialog
-

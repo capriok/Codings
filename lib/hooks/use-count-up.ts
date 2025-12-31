@@ -1,6 +1,6 @@
 "use client"
 
-import { useSpring, useTransform, type MotionValue } from "motion/react"
+import { type MotionValue, useSpring, useTransform } from "motion/react"
 import { useEffect } from "react"
 
 interface CountUpOptions {
@@ -16,10 +16,7 @@ interface CountUpOptions {
  * Animates a number from 0 to a target value with spring physics.
  * Returns a MotionValue that can be used with motion components.
  */
-export function useCountUp(
-  target: number,
-  options: CountUpOptions = {}
-): MotionValue<number> {
+export function useCountUp(target: number, options: CountUpOptions = {}): MotionValue<number> {
   const { duration = 800, delay = 0 } = options
 
   const spring = useSpring(0, {
@@ -51,4 +48,3 @@ export function useCountUpFormatted(
 
   return useTransform(spring, format)
 }
-

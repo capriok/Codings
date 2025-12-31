@@ -1,9 +1,9 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
-import type { GameDifficulty, GameLength } from "@/lib/hooks/use-game"
-import { Kbd } from "@/components/ui/kbd"
 import { CommandIcon, CornerDownLeftIcon } from "lucide-react"
+import { useCallback, useEffect, useState } from "react"
+import { Kbd } from "@/components/ui/kbd"
+import type { GameDifficulty, GameLength } from "@/lib/hooks/use-game"
 import { cn } from "../utils"
 
 interface UseGameControlsParams {
@@ -91,17 +91,21 @@ const CONTROL_KEYS: Record<ControlType, React.ReactNode> = {
 export function KDBGameControl({ type, flat }: { type: ControlType; flat?: boolean }) {
   // Defer platform detection to avoid hydration mismatch
   const [isMac, setIsMac] = useState<boolean | null>(null)
-  
+
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMac(/Mac|iPhone|iPad/.test(navigator.userAgent))
   }, [])
 
   // Render nothing for mod key until client-side detection completes
-  const mod = isMac === null 
-    ? <span className="w-4" /> // placeholder to prevent layout shift
-    : isMac 
-      ? <CommandIcon className="size-3" /> 
-      : <span className="font-sans text-xs">Ctrl</span>
+  const mod =
+    isMac === null ? (
+      <span className="w-4" /> // placeholder to prevent layout shift
+    ) : isMac ? (
+      <CommandIcon className="size-3" />
+    ) : (
+      <span className="font-sans text-xs">Ctrl</span>
+    )
   const key = CONTROL_KEYS[type]
 
   const content = (
@@ -112,11 +116,7 @@ export function KDBGameControl({ type, flat }: { type: ControlType; flat?: boole
   )
 
   if (flat) {
-    return (
-      <span className={cn("inline-flex items-center gap-1 font-mono text-xs")}>
-        {content}
-      </span>
-    )
+    return <span className={cn("inline-flex items-center gap-1 font-mono text-xs")}>{content}</span>
   }
 
   return <Kbd>{content}</Kbd>

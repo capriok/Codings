@@ -1,7 +1,7 @@
 "use client"
 
-import { useMemo } from "react"
 import { motion } from "motion/react"
+import { useMemo } from "react"
 import GameEditor from "@/app/(game)/game-editor"
 import type { EditorProgress, Prompt } from "@/lib/types"
 

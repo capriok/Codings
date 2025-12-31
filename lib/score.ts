@@ -49,7 +49,7 @@ export function getConsistencyMultiplier(consistency: number | null): number {
   if (consistency === null) return 1.0
 
   const normalized = clamp(consistency, 0, 100) / 100
-  const bonus = Math.pow(normalized, 2) * 0.2
+  const bonus = normalized ** 2 * 0.2
   const multiplier = 1 + bonus
 
   return clamp(multiplier, 1.0, MAX_CONSISTENCY_MULTIPLIER)
@@ -60,10 +60,7 @@ export function getConsistencyMultiplier(consistency: number | null): number {
  * Short snippets (<80 chars) have softened accuracy penalties.
  * Snippets >= 80 chars use raw accuracy unchanged.
  */
-export function getEffectiveAccuracy(
-  accuracy: number,
-  targetChars: number
-): number {
+export function getEffectiveAccuracy(accuracy: number, targetChars: number): number {
   const t = clamp(targetChars / ACCURACY_NORMALIZATION_THRESHOLD, 0, 1)
   return lerp(1, accuracy, t)
 }
@@ -112,8 +109,7 @@ export function computeScore(input: ScoreInput): ScoreOutput {
 
   // Core metrics
   const cWPM = correctCharacters / 5 / (timeMs / 60000)
-  const accuracy =
-    totalTypedCharacters > 0 ? correctCharacters / totalTypedCharacters : 0
+  const accuracy = totalTypedCharacters > 0 ? correctCharacters / totalTypedCharacters : 0
 
   // Multipliers
   const effectiveAccuracy = getEffectiveAccuracy(accuracy, targetChars)
@@ -121,8 +117,7 @@ export function computeScore(input: ScoreInput): ScoreOutput {
   const consistencyMultiplier = getConsistencyMultiplier(consistency)
 
   // Final score with all multipliers
-  const score =
-    cWPM * effectiveAccuracy * difficultyMultiplier * consistencyMultiplier
+  const score = cWPM * effectiveAccuracy * difficultyMultiplier * consistencyMultiplier
 
   return {
     cWPM,
@@ -130,4 +125,3 @@ export function computeScore(input: ScoreInput): ScoreOutput {
     score,
   }
 }
-

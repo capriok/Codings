@@ -15,8 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Codings",
-  description:
-    "Codings is a typing game that helps you improve your coding speed and accuracy.",
+  description: "Codings is a typing game that helps you improve your coding speed and accuracy.",
 }
 
 export default function RootLayout({

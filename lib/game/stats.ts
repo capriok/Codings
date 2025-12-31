@@ -17,8 +17,7 @@ export function computeConsistency(timestamps: number[]): number | null {
   const mean = intervals.reduce((a, b) => a + b, 0) / intervals.length
   if (mean <= 0) return null
 
-  const variance =
-    intervals.reduce((acc, x) => acc + Math.pow(x - mean, 2), 0) / intervals.length
+  const variance = intervals.reduce((acc, x) => acc + (x - mean) ** 2, 0) / intervals.length
   const sd = Math.sqrt(variance)
   const cv = sd / mean
   const score = Math.max(0, Math.min(100, 100 - cv * 100))
@@ -38,10 +37,7 @@ export function computeWpm(chars: number, durationMs: number): number {
 /**
  * Get top N problem keys sorted by error count.
  */
-function getTopProblemKeys(
-  problemKeyErrors: Map<string, number>,
-  n: number
-): string[] {
+function getTopProblemKeys(problemKeyErrors: Map<string, number>, n: number): string[] {
   return Array.from(problemKeyErrors.entries())
     .sort((a, b) => b[1] - a[1])
     .slice(0, n)

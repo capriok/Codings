@@ -1,22 +1,18 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import { computeRunStats } from "@/lib/game/stats"
-import {
-  getPrompt,
-  findFirstPromptIndex,
-  pickRandomPromptIndex,
-} from "@/lib/game/prompts"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { findFirstPromptIndex, getPrompt, pickRandomPromptIndex } from "@/lib/game/prompts"
 import { createSessionRefs, resetSessionRefs } from "@/lib/game/session"
+import { computeRunStats } from "@/lib/game/stats"
+import { useResultHistory } from "@/lib/hooks/use-result-history"
 import { useScoreApi } from "@/lib/hooks/use-score-api"
 import { encodeResult } from "@/lib/result-codec"
-import { useResultHistory } from "@/lib/hooks/use-result-history"
 import type {
   Difficulty,
   EditorProgress,
-  PromptLines,
   GameResult,
+  PromptLines,
   RunStats,
   Screen,
   ServerScoreResponse,
@@ -57,8 +53,8 @@ export function useGame() {
   // ─── Live Typing State ───────────────────────────────────────────────────
   const [typed, setTyped] = useState("")
   const [error, setError] = useState(false)
-  const [lastCorrect, setLastCorrect] = useState(0)
-  const [lastTotal, setLastTotal] = useState(0)
+  const [_lastCorrect, setLastCorrect] = useState(0)
+  const [_lastTotal, setLastTotal] = useState(0)
 
   // ─── Timing ──────────────────────────────────────────────────────────────
   const [startMs, setStartMs] = useState<number | null>(null)
@@ -72,25 +68,22 @@ export function useGame() {
   const sessionRef = useRef(createSessionRefs())
 
   // ─── Reset Helper ────────────────────────────────────────────────────────
-  const resetGame = useCallback(
-    (newLength: GameLength, newDifficulty: GameDifficulty) => {
-      // Reset session tracking
-      resetSessionRefs(sessionRef.current)
+  const resetGame = useCallback((newLength: GameLength, newDifficulty: GameDifficulty) => {
+    // Reset session tracking
+    resetSessionRefs(sessionRef.current)
 
-      // Reset React state
-      setScreen("game")
-      setPromptIndex(pickRandomPromptIndex(newLength, newDifficulty))
-      setTyped("")
-      setError(false)
-      setStartMs(null)
-      setLastCorrect(0)
-      setLastTotal(0)
-      setScore(null)
-      setRunStats(null)
-      setEditorKey((k) => k + 1)
-    },
-    []
-  )
+    // Reset React state
+    setScreen("game")
+    setPromptIndex(pickRandomPromptIndex(newLength, newDifficulty))
+    setTyped("")
+    setError(false)
+    setStartMs(null)
+    setLastCorrect(0)
+    setLastTotal(0)
+    setScore(null)
+    setRunStats(null)
+    setEditorKey((k) => k + 1)
+  }, [])
 
   // ─── Public Actions ──────────────────────────────────────────────────────
   const newSnippet = useCallback(() => {

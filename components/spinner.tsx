@@ -1,8 +1,8 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
 interface SpinnerProps {
-  className?: string;
-  size?: number;
+  className?: string
+  size?: number
 }
 
 export function Spinner({ className, size = 20 }: SpinnerProps) {
@@ -20,6 +20,5 @@ export function Spinner({ className, size = 20 }: SpinnerProps) {
     >
       <path d="M21 12a9 9 0 1 1-6.219-8.56" />
     </svg>
-  );
+  )
 }
-

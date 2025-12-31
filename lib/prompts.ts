@@ -51,7 +51,7 @@ export const PROMPTS: Prompt[] = [
     language: "ts",
     difficulty: "medium",
     lines: 1,
-    code: `const n = Number.parseInt("42", 10)`,
+    code: `const sum = [1, 2, 3].reduce((a, b) => a + b, 0)`,
   },
   {
     id: "1-medium-2",
@@ -81,21 +81,21 @@ export const PROMPTS: Prompt[] = [
     language: "ts",
     difficulty: "hard",
     lines: 1,
-    code: `const uniq = <T,>(xs: T[]) => Array.from(new Set(xs))`,
+    code: `const tap = <T,>(x: T, fn: (x: T) => void): T => (fn(x), x)`,
   },
   {
     id: "1-hard-1",
     language: "ts",
     difficulty: "hard",
     lines: 1,
-    code: `const hex = (n: number) => n.toString(16).padStart(2, "0")`,
+    code: `type Flatten<T> = T extends (infer U)[] ? U : T`,
   },
   {
     id: "1-hard-2",
     language: "ts",
     difficulty: "hard",
     lines: 1,
-    code: `type Props = { children: React.ReactNode }`,
+    code: `type Keys<T> = T extends object ? keyof T : never`,
   },
   {
     id: "1-hard-3",
@@ -109,7 +109,7 @@ export const PROMPTS: Prompt[] = [
     language: "ts",
     difficulty: "hard",
     lines: 1,
-    code: `const assert = (cond: unknown): asserts cond => { if (!cond) throw Error() }`,
+    code: `type Awaited<T> = T extends Promise<infer U> ? U : T`,
   },
 
   // 2-line easy
@@ -118,28 +118,28 @@ export const PROMPTS: Prompt[] = [
     language: "ts",
     difficulty: "easy",
     lines: 2,
-    code: `const now = new Date()\nconsole.log(now.toISOString())`,
+    code: `const now = new Date()\nconst iso = now.toISOString()`,
   },
   {
     id: "2-easy-1",
     language: "ts",
     difficulty: "easy",
     lines: 2,
-    code: `const xs = [1, 2, 3]\nconsole.log(xs.length)`,
+    code: `const xs = [1, 2, 3]\nconst len = xs.length`,
   },
   {
     id: "2-easy-2",
     language: "ts",
     difficulty: "easy",
     lines: 2,
-    code: `const name = "world"\nconsole.log(\`Hello, \${name}!\`)`,
+    code: `const name = "world"\nconst greeting = \`Hello, \${name}!\``,
   },
   {
     id: "2-easy-3",
     language: "ts",
     difficulty: "easy",
     lines: 2,
-    code: `const nums = [1, 2, 3]\nconst doubled = nums.map((n) => n * 2)`,
+    code: `const x = 5\nconst y = x * 2 + 1`,
   },
   {
     id: "2-easy-4",
@@ -155,21 +155,21 @@ export const PROMPTS: Prompt[] = [
     language: "ts",
     difficulty: "medium",
     lines: 2,
-    code: `const isEven = (n: number) => n % 2 === 0\nconsole.log([1, 2, 3, 4].filter(isEven))`,
+    code: `const isEven = (n: number) => n % 2 === 0\nconst evens = [1, 2, 3, 4].filter(isEven)`,
   },
   {
     id: "2-medium-1",
     language: "ts",
     difficulty: "medium",
     lines: 2,
-    code: `const words = "a b  c".trim().split(/\\s+/)\nconsole.log(words.join(","))`,
+    code: `const words = "a b  c".trim().split(/\\s+/)\nconst csv = words.join(",")`,
   },
   {
     id: "2-medium-2",
     language: "ts",
     difficulty: "medium",
     lines: 2,
-    code: `const data = await fetch("/api/users")\nconst users = await data.json()`,
+    code: `const doubled = [1, 2, 3].map((n) => n * 2)\nconst sum = doubled.reduce((a, b) => a + b, 0)`,
   },
   {
     id: "2-medium-3",
@@ -183,7 +183,7 @@ export const PROMPTS: Prompt[] = [
     language: "ts",
     difficulty: "medium",
     lines: 2,
-    code: `const sorted = [...items].sort((a, b) => a.localeCompare(b))\nconsole.log(sorted)`,
+    code: `const sorted = [...items].sort((a, b) => a.localeCompare(b))\nconst first = sorted[0]`,
   },
 
   // 2-line hard
@@ -192,7 +192,7 @@ export const PROMPTS: Prompt[] = [
     language: "ts",
     difficulty: "hard",
     lines: 2,
-    code: `type User = { id: string; name: string }\nconst getId = (u: User) => u.id`,
+    code: `type Fn<T, R> = (arg: T) => R\nconst apply = <T, R>(fn: Fn<T, R>, x: T): R => fn(x)`,
   },
   {
     id: "2-hard-1",
@@ -213,14 +213,14 @@ export const PROMPTS: Prompt[] = [
     language: "ts",
     difficulty: "hard",
     lines: 2,
-    code: `export async function GET(req: Request) {\n  return Response.json({ ok: true })\n}`,
+    code: `type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>\ntype User = Optional<{ id: string; name: string }, "id">`,
   },
   {
     id: "2-hard-4",
     language: "ts",
     difficulty: "hard",
     lines: 2,
-    code: `const keys = <T extends object>(obj: T) => Object.keys(obj) as (keyof T)[]\nconst entries = Object.entries({ a: 1, b: 2 })`,
+    code: `const keys = <T extends object>(o: T) => Object.keys(o) as (keyof T)[]\nconst k = keys({ a: 1, b: 2 })`,
   },
 
   // 3-line easy
@@ -229,7 +229,7 @@ export const PROMPTS: Prompt[] = [
     language: "ts",
     difficulty: "easy",
     lines: 3,
-    code: `const xs = [1, 2, 3]\nconst sum = xs.reduce((a, n) => a + n, 0)\nconsole.log(sum)`,
+    code: `const a = 1\nconst b = 2\nconst c = a + b`,
   },
   {
     id: "3-easy-1",
@@ -243,7 +243,7 @@ export const PROMPTS: Prompt[] = [
     language: "ts",
     difficulty: "easy",
     lines: 3,
-    code: `const user = { name: "Alice", age: 30 }\nconst { name, age } = user\nconsole.log(name, age)`,
+    code: `const user = { name: "Alice", age: 30 }\nconst { name, age } = user\nconst info = \`\${name} is \${age}\``,
   },
   {
     id: "3-easy-3",
@@ -257,7 +257,7 @@ export const PROMPTS: Prompt[] = [
     language: "ts",
     difficulty: "easy",
     lines: 3,
-    code: `const colors = ["red", "green", "blue"]\nconst first = colors[0]\nconsole.log(first)`,
+    code: `const colors = ["red", "green", "blue"]\nconst first = colors[0]\nconst last = colors.at(-1)`,
   },
 
   // 3-line medium
@@ -266,21 +266,21 @@ export const PROMPTS: Prompt[] = [
     language: "ts",
     difficulty: "medium",
     lines: 3,
-    code: `const clamp = (n: number, a: number, b: number) => Math.min(b, Math.max(a, n))\nconst x = clamp(10, 0, 5)\nconsole.log(x)`,
+    code: `const clamp = (n: number, min: number, max: number) =>\n  Math.min(max, Math.max(min, n))\nconst clamped = clamp(10, 0, 5)`,
   },
   {
     id: "3-medium-1",
     language: "ts",
     difficulty: "medium",
     lines: 3,
-    code: `const toTitle = (s: string) => s[0]!.toUpperCase() + s.slice(1)\nconst out = toTitle("hello")\nconsole.log(out)`,
+    code: `const toTitle = (s: string) => s[0]!.toUpperCase() + s.slice(1)\nconst hello = toTitle("hello")\nconst world = toTitle("world")`,
   },
   {
     id: "3-medium-2",
     language: "ts",
     difficulty: "medium",
     lines: 3,
-    code: `const fetchUser = async (id: string) => {\n  const res = await fetch(\`/api/users/\${id}\`)\n  return res.json()\n}`,
+    code: `const fetchUser = async (id: string) =>\n  fetch(\`/api/users/\${id}\`).then((r) => r.json())\nconst user = await fetchUser("123")`,
   },
   {
     id: "3-medium-3",
@@ -294,7 +294,7 @@ export const PROMPTS: Prompt[] = [
     language: "ts",
     difficulty: "medium",
     lines: 3,
-    code: `const grouped = items.reduce<Record<string, Item[]>>((acc, item) => {\n  (acc[item.type] ??= []).push(item)\n  return acc\n}, {})`,
+    code: `type GroupedItems = Record<string, Item[]>\nconst grouped: GroupedItems = {}\nitems.forEach((item) => (grouped[item.type] ??= []).push(item))`,
   },
 
   // 3-line hard
@@ -303,21 +303,21 @@ export const PROMPTS: Prompt[] = [
     language: "ts",
     difficulty: "hard",
     lines: 3,
-    code: `function clamp(n: number, min: number, max: number) {\n  return Math.min(max, Math.max(min, n))\n}`,
+    code: `type DeepPartial<T> = {\n  [K in keyof T]?: DeepPartial<T[K]>\n}`,
   },
   {
     id: "3-hard-1",
     language: "ts",
     difficulty: "hard",
     lines: 3,
-    code: `const pipe = <A, B, C>(ab: (a: A) => B, bc: (b: B) => C) => (a: A) => bc(ab(a))\nconst inc = (n: number) => n + 1\nconsole.log(pipe(inc, inc)(0))`,
+    code: `const compose = <A, B, C>(f: (a: A) => B, g: (b: B) => C) =>\n  (x: A): C => g(f(x))\nconst toStr = compose((n: number) => n * 2, String)`,
   },
   {
     id: "3-hard-2",
     language: "ts",
     difficulty: "hard",
     lines: 3,
-    code: `type Action = { type: "inc" } | { type: "dec" } | { type: "set"; value: number }\nconst reducer = (state: number, action: Action) =>\n  action.type === "set" ? action.value : state + (action.type === "inc" ? 1 : -1)`,
+    code: `type Action = "inc" | "dec" | "reset"\nconst reduce = (s: number, a: Action) =>\n  a === "reset" ? 0 : s + (a === "inc" ? 1 : -1)`,
   },
   {
     id: "3-hard-3",
@@ -331,6 +331,6 @@ export const PROMPTS: Prompt[] = [
     language: "ts",
     difficulty: "hard",
     lines: 3,
-    code: `const memoize = <T extends (...args: string[]) => unknown>(fn: T) => {\n  const cache = new Map<string, ReturnType<T>>()\n  return (...args: Parameters<T>) => cache.get(args.join()) ?? fn(...args)\n}`,
+    code: `type Nullable<T> = T | null | undefined\nconst isDefined = <T,>(x: Nullable<T>): x is T => x != null\nconst compact = <T,>(xs: Nullable<T>[]) => xs.filter(isDefined)`,
   },
 ]

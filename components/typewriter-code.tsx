@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useState, useMemo } from "react"
-import { motion, AnimatePresence } from "motion/react"
+import { AnimatePresence, motion } from "motion/react"
+import { useEffect, useMemo, useState } from "react"
 
 interface TypewriterCodeProps {
   code: string
@@ -80,7 +80,7 @@ export default function TypewriterCode({
       </div>
 
       {/* Code content */}
-      <pre className="flex-1 whitespace-pre-wrap p-4 m-0 relative">
+      <pre className="flex-1 overflow-x-auto whitespace-pre p-4 m-0 relative">
         {/* Typed text */}
         <span>{code.slice(0, charIndex)}</span>
 
@@ -102,4 +102,3 @@ export default function TypewriterCode({
     </motion.div>
   )
 }
-

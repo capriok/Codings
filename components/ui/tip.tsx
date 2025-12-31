@@ -18,11 +18,7 @@ export default function Tip({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
-        <TooltipContent
-          align={align}
-          side={side}
-          className={cn("select-none", className)}
-        >
+        <TooltipContent align={align} side={side} className={cn("select-none", className)}>
           {tip}
         </TooltipContent>
       </Tooltip>

@@ -1,7 +1,7 @@
 "use client"
 
 import GameHeader from "@/app/(game)/game-header"
-import GameLayout, { GameTitle } from "@/app/(game)/game-layout"
+import GameLayout from "@/app/(game)/game-layout"
 import GameSession from "@/app/(game)/game-session"
 import { Spinner } from "@/components/spinner"
 import { useGame } from "@/lib/hooks/use-game"
@@ -36,7 +36,7 @@ export default function Page() {
 
   return (
     <GameLayout>
-      
+      <div className="flex w-full flex-col">
         <GameHeader
           lengths={LENGTHS}
           length={length}
@@ -46,22 +46,25 @@ export default function Page() {
           onDifficultyChange={setDifficulty}
         />
 
-        {screen === "game" && (
-          <GameSession
-            prompt={prompt}
-            target={target}
-            editorKey={editorKey}
-            length={length}
-            onProgress={onProgress}
-            onNewSnippet={newSnippet}
-          />
-        )}
+        <div className="min-h-[200px] w-full">
+          {screen === "game" && (
+            <GameSession
+              prompt={prompt}
+              target={target}
+              editorKey={editorKey}
+              length={length}
+              onProgress={onProgress}
+              onNewSnippet={newSnippet}
+            />
+          )}
 
-        {screen === "encoding" && (
-          <div className="flex min-h-[244px] w-full items-center justify-center">
-            <Spinner />
-          </div>
-        )}
+          {screen === "encoding" && (
+            <div className="flex min-h-[200px] w-full items-center justify-center">
+              <Spinner />
+            </div>
+          )}
+        </div>
+      </div>
     </GameLayout>
   )
 }

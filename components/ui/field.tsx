@@ -1,17 +1,19 @@
 "use client"
 
-import { useMemo } from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-
-import { cn } from "@/lib/utils"
+import { useMemo } from "react"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
+import { cn } from "@/lib/utils"
 
 function FieldSet({ className, ...props }: React.ComponentProps<"fieldset">) {
   return (
     <fieldset
       data-slot="field-set"
-      className={cn("gap-6 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3 flex flex-col", className)}
+      className={cn(
+        "gap-6 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3 flex flex-col",
+        className
+      )}
       {...props}
     />
   )
@@ -26,7 +28,10 @@ function FieldLegend({
     <legend
       data-slot="field-legend"
       data-variant={variant}
-      className={cn("mb-3 font-medium data-[variant=label]:text-sm data-[variant=legend]:text-base", className)}
+      className={cn(
+        "mb-3 font-medium data-[variant=label]:text-sm data-[variant=legend]:text-base",
+        className
+      )}
       {...props}
     />
   )
@@ -48,8 +53,7 @@ function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
 const fieldVariants = cva("data-[invalid=true]:text-destructive gap-3 group/field flex w-full", {
   variants: {
     orientation: {
-      vertical:
-        "flex-col [&>*]:w-full [&>.sr-only]:w-auto",
+      vertical: "flex-col [&>*]:w-full [&>.sr-only]:w-auto",
       horizontal:
         "flex-row items-center [&>[data-slot=field-label]]:flex-auto has-[>[data-slot=field-content]]:items-start has-[>[data-slot=field-content]]:[&>[role=checkbox],[role=radio]]:mt-px",
       responsive:
@@ -81,19 +85,13 @@ function FieldContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="field-content"
-      className={cn(
-        "gap-1 group/field-content flex flex-1 flex-col leading-snug",
-        className
-      )}
+      className={cn("gap-1 group/field-content flex flex-1 flex-col leading-snug", className)}
       {...props}
     />
   )
 }
 
-function FieldLabel({
-  className,
-  ...props
-}: React.ComponentProps<typeof Label>) {
+function FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>) {
   return (
     <Label
       data-slot="field-label"
@@ -146,7 +144,10 @@ function FieldSeparator({
     <div
       data-slot="field-separator"
       data-content={!!children}
-      className={cn("-my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2 relative", className)}
+      className={cn(
+        "-my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2 relative",
+        className
+      )}
       {...props}
     >
       <Separator className="absolute inset-0 top-1/2" />
@@ -179,20 +180,15 @@ function FieldError({
       return null
     }
 
-    const uniqueErrors = [
-      ...new Map(errors.map((error) => [error?.message, error])).values(),
-    ]
+    const uniqueErrors = [...new Map(errors.map((error) => [error?.message, error])).values()]
 
-    if (uniqueErrors?.length == 1) {
+    if (uniqueErrors?.length === 1) {
       return uniqueErrors[0]?.message
     }
 
     return (
       <ul className="ml-4 flex list-disc flex-col gap-1">
-        {uniqueErrors.map(
-          (error, index) =>
-            error?.message && <li key={index}>{error.message}</li>
-        )}
+        {uniqueErrors.map((error, index) => error?.message && <li key={index}>{error.message}</li>)}
       </ul>
     )
   }, [children, errors])

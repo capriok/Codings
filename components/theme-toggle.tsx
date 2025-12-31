@@ -1,7 +1,7 @@
 "use client"
 
-import { useTheme } from "next-themes"
 import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react"
+import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
 
 const themes = [
@@ -34,4 +34,3 @@ export function ThemeToggle() {
     </div>
   )
 }
-

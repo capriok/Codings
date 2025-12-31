@@ -18,10 +18,7 @@ export function findFirstPromptIndex(lines: PromptLines, difficulty: Difficulty)
 /**
  * Find all prompt indices matching the given criteria.
  */
-export function findEligiblePromptIndices(
-  lines: PromptLines,
-  difficulty: Difficulty
-): number[] {
+export function findEligiblePromptIndices(lines: PromptLines, difficulty: Difficulty): number[] {
   const eligible: number[] = []
   for (let i = 0; i < PROMPTS.length; i++) {
     const p = PROMPTS[i]
@@ -35,10 +32,7 @@ export function findEligiblePromptIndices(
 /**
  * Pick a random prompt matching the given criteria.
  */
-export function pickRandomPromptIndex(
-  lines: PromptLines,
-  difficulty: Difficulty
-): number {
+export function pickRandomPromptIndex(lines: PromptLines, difficulty: Difficulty): number {
   const eligible = findEligiblePromptIndices(lines, difficulty)
   if (eligible.length === 0) return 0
   return eligible[Math.floor(Math.random() * eligible.length)]!

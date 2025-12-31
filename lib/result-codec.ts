@@ -1,4 +1,11 @@
-import type { Difficulty, Language, Prompt, PromptLines, RunStats, ServerScoreResponse } from "@/lib/types"
+import type {
+  Difficulty,
+  Language,
+  Prompt,
+  PromptLines,
+  RunStats,
+  ServerScoreResponse,
+} from "@/lib/types"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Compact Payload Types (short keys for smaller URLs)
@@ -6,30 +13,30 @@ import type { Difficulty, Language, Prompt, PromptLines, RunStats, ServerScoreRe
 
 interface CompactPrompt {
   id: string
-  l: Language      // language
-  d: Difficulty    // difficulty
-  n: PromptLines   // lines
-  c: string        // code
+  l: Language // language
+  d: Difficulty // difficulty
+  n: PromptLines // lines
+  c: string // code
 }
 
 interface CompactStats {
-  w: number        // correctWpm
-  a: number        // accuracy (0..1)
-  t: number        // durationMs
-  sc: number       // score
+  w: number // correctWpm
+  a: number // accuracy (0..1)
+  t: number // durationMs
+  sc: number // score
 }
 
 interface CompactRunExtras {
-  rw: number       // rawWpm
-  m: number        // mistakes
-  b: number        // backspaces
+  rw: number // rawWpm
+  m: number // mistakes
+  b: number // backspaces
   cn: number | null // consistency
   fk: number | null // timeToFirstKeyMs
-  cc: number       // correctChars
-  tc: number       // targetChars
-  tt: number       // totalTypedChars
+  cc: number // correctChars
+  tc: number // targetChars
+  tt: number // totalTypedChars
   // New metrics
-  pk?: string[]    // problemKeys (top 3)
+  pk?: string[] // problemKeys (top 3)
   lp?: number | null // longestPauseMs
   cl?: number | null // avgCorrectionLatencyMs
 }
@@ -77,7 +84,10 @@ export function encodeResult(
       tt: runStats.totalTypedChars,
       pk: runStats.problemKeys.length > 0 ? runStats.problemKeys : undefined,
       lp: runStats.longestPauseMs != null ? Math.round(runStats.longestPauseMs) : undefined,
-      cl: runStats.avgCorrectionLatencyMs != null ? Math.round(runStats.avgCorrectionLatencyMs) : undefined,
+      cl:
+        runStats.avgCorrectionLatencyMs != null
+          ? Math.round(runStats.avgCorrectionLatencyMs)
+          : undefined,
     },
   }
 
@@ -143,4 +153,3 @@ export function decodeResult(encoded: string): {
     return null
   }
 }
-

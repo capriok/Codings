@@ -137,12 +137,9 @@ export function AnimatedScore({ score, delay = 0, duration = 1000 }: AnimatedSco
         transition={{ duration: 0.4, delay: delay / 1000 }}
         className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-center"
       >
-        <motion.span className="font-mono text-2xl font-bold text-primary">
-          {displayed}
-        </motion.span>
+        <motion.span className="font-mono text-2xl font-bold text-primary">{displayed}</motion.span>
         <span className="ml-2 font-mono text-xs text-accent-foreground">score</span>
       </motion.div>
     </Tip>
   )
 }
-

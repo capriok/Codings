@@ -1,6 +1,6 @@
 import Link from "next/link"
-import Tip from "@/components/ui/tip"
 import { ThemeToggle } from "@/components/theme-toggle"
+import Tip from "@/components/ui/tip"
 import { KDBGameControl } from "@/lib/hooks/use-game-controls"
 import { cn } from "@/lib/utils"
 
@@ -8,7 +8,7 @@ export default function GameLayout({ children }: { children: React.ReactNode }) 
   return (
     <main className="bg-background text-foreground flex flex-col items-center min-h-screen">
       <GameTitle />
-      <div className="flex max-w-200 w-full flex-col px-2 md:px-0 justify-center items-center mt-16 md:6 w-full">
+      <div className="flex max-w-200 w-full flex-col px-2 md:px-0 justify-center items-center mt-8">
         {children}
       </div>
     </main>

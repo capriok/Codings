@@ -1,6 +1,6 @@
-import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { Slot } from "radix-ui"
+import type * as React from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -14,16 +14,22 @@ const badgeVariants = cva(
         "default-outline": "border-primary/40 bg-card/40 text-primary [a]:hover:bg-primary/20",
         // Secondary
         secondary: "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
-        "secondary-outline": "border-secondary bg-secondary/20 text-secondary-foreground [a]:hover:bg-secondary/30",
+        "secondary-outline":
+          "border-secondary bg-secondary/20 text-secondary-foreground [a]:hover:bg-secondary/30",
         // Destructive
-        destructive: "bg-destructive/20 text-destructive [a]:hover:bg-destructive/30 dark:bg-destructive/20",
-        "destructive-outline": "border-destructive/40 bg-card/40 text-destructive [a]:hover:bg-destructive/20",
+        destructive:
+          "bg-destructive/20 text-destructive [a]:hover:bg-destructive/30 dark:bg-destructive/20",
+        "destructive-outline":
+          "border-destructive/40 bg-card/40 text-destructive [a]:hover:bg-destructive/20",
         // Success
-        success: "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 [a]:hover:bg-emerald-500/30",
-        "success-outline": "border-emerald-500/40 bg bg-card/40 text-emerald-600 dark:text-emerald-400 [a]:hover:bg-emerald-500/20",
+        success:
+          "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 [a]:hover:bg-emerald-500/30",
+        "success-outline":
+          "border-emerald-500/40 bg bg-card/40 text-emerald-600 dark:text-emerald-400 [a]:hover:bg-emerald-500/20",
         // Warning
         warning: "bg-amber-500/20 text-amber-600 dark:text-amber-400 [a]:hover:bg-amber-500/30",
-        "warning-outline": "border-amber-500/40 bg bg-card/40 text-amber-600 dark:text-amber-400 [a]:hover:bg-amber-500/20",
+        "warning-outline":
+          "border-amber-500/40 bg bg-card/40 text-amber-600 dark:text-amber-400 [a]:hover:bg-amber-500/20",
         // Utility variants
         outline: "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
         ghost: "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
@@ -41,8 +47,7 @@ function Badge({
   variant = "default",
   asChild = false,
   ...props
-}: React.ComponentProps<"span"> &
-  VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
+}: React.ComponentProps<"span"> & VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
   const Comp = asChild ? Slot.Root : "span"
 
   return (

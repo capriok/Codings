@@ -1,16 +1,16 @@
 "use client"
 
-import { motion } from "motion/react"
 import { SpaceIcon } from "lucide-react"
-import Tip from "@/components/ui/tip"
+import { motion } from "motion/react"
+import { AnimatedScore, AnimatedStat, AnimatedStatCard } from "@/components/animated-stat"
+import { RecentResultsDialog } from "@/components/recent-results-dialog"
+import TypewriterCode from "@/components/typewriter-code"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { AnimatedStatCard, AnimatedStat, AnimatedScore } from "@/components/animated-stat"
-import TypewriterCode from "@/components/typewriter-code"
+import Tip from "@/components/ui/tip"
 import { KDBGameControl } from "@/lib/hooks/use-game-controls"
-import { formatDifficulty } from "@/lib/utils"
-import { RecentResultsDialog } from "@/components/recent-results-dialog"
 import type { Prompt, RunStats, ServerScoreResponse } from "@/lib/types"
+import { formatDifficulty } from "@/lib/utils"
 
 // Animation timing constants (in ms)
 const TIMING = {
@@ -85,13 +85,9 @@ export default function GameResults({
             <RecentResultsDialog />
           </div>
         </motion.div>
-        
+
         {/* Code snippet with typewriter effect */}
-        <TypewriterCode
-          code={target}
-          startDelay={TIMING.codeDelay}
-          speed={TIMING.codeSpeed}
-        />
+        <TypewriterCode code={target} startDelay={TIMING.codeDelay} speed={TIMING.codeSpeed} />
 
         {/* Main stats with staggered count-up */}
         <div className="grid grid-cols-3 gap-3">
@@ -156,13 +152,24 @@ export default function GameResults({
             <div className="flex items-center justify-between rounded-lg bg-card px-3 py-2">
               <span className="font-mono text-xs text-muted-foreground/70">Problem Keys</span>
               <div className="font-mono text-sm font-medium text-foreground/80 flex gap-1">
-                {runStats?.problemKeys && runStats.problemKeys.length > 0
-                  ? runStats.problemKeys.map((k) => (
-                      <code key={k} className="bg-muted size-6 rounded inline-flex items-center justify-center">
-                        {k === "\n" ? "↵" : k === " " ? <SpaceIcon className="size-3" /> : k.toUpperCase()}
-                      </code>
-                    ))
-                  : <span>—</span>}
+                {runStats?.problemKeys && runStats.problemKeys.length > 0 ? (
+                  runStats.problemKeys.map((k) => (
+                    <code
+                      key={k}
+                      className="bg-muted size-6 rounded inline-flex items-center justify-center"
+                    >
+                      {k === "\n" ? (
+                        "↵"
+                      ) : k === " " ? (
+                        <SpaceIcon className="size-3" />
+                      ) : (
+                        k.toUpperCase()
+                      )}
+                    </code>
+                  ))
+                ) : (
+                  <span>—</span>
+                )}
               </div>
             </div>
           </Tip>
@@ -175,7 +182,11 @@ export default function GameResults({
           />
           <AnimatedStat
             label="Correction Time"
-            value={runStats?.avgCorrectionLatencyMs != null ? runStats.avgCorrectionLatencyMs / 1000 : "—"}
+            value={
+              runStats?.avgCorrectionLatencyMs != null
+                ? runStats.avgCorrectionLatencyMs / 1000
+                : "—"
+            }
             format={(v) => `${v.toFixed(2)}s`}
             tip="Average time to press backspace after error"
             delay={TIMING.secondaryStatsDelay + 200}

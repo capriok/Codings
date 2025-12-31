@@ -1,7 +1,8 @@
 "use client"
 
-import React, { useEffect, useMemo, useRef, useState } from "react"
 import { CornerDownLeftIcon, RotateCcw } from "lucide-react"
+import type React from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { KDBGameControl } from "@/lib/hooks/use-game-controls"
 import type { EditorProgress } from "@/lib/types"
 
@@ -167,10 +168,8 @@ export function GameEditor({ target, onProgress, onRedo, disabled }: EditorProps
             ))}
           </div>
           {/* Code content */}
-          <div className="min-h-[100px] flex-1 whitespace-pre-wrap p-4 pr-14">
-            <span className={error ? "text-destructive" : "text-primary font-medium"}>
-              {typed}
-            </span>
+          <div className="min-h-[100px] flex-1 overflow-x-auto whitespace-pre p-4 pr-14">
+            <span className={error ? "text-destructive" : "text-primary font-medium"}>{typed}</span>
             {error && wrongChar ? (
               <span
                 className="bg-destructive/20 text-destructive font-bold border-b-2 border-destructive"

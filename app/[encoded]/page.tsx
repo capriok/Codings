@@ -1,17 +1,13 @@
 "use client"
 
-import { use, useEffect } from "react"
 import Link from "next/link"
-import GameLayout, { GameTitle } from "@/app/(game)/game-layout"
+import { use, useEffect } from "react"
+import GameLayout from "@/app/(game)/game-layout"
 import GameResults from "@/app/(game)/game-results"
 import { Button } from "@/components/ui/button"
 import { decodeResult } from "@/lib/result-codec"
 
-export default function ResultsPage({
-  params,
-}: {
-  params: Promise<{ encoded: string }>
-}) {
+export default function ResultsPage({ params }: { params: Promise<{ encoded: string }> }) {
   const { encoded } = use(params)
   const result = decodeResult(encoded)
 
@@ -31,9 +27,7 @@ export default function ResultsPage({
     return (
       <GameLayout>
         <div className="flex flex-col items-center gap-4">
-          <p className="text-muted-foreground font-mono">
-            Invalid or expired result link
-          </p>
+          <p className="text-muted-foreground font-mono">Invalid or expired result link</p>
           <Button asChild variant="secondary">
             <Link href="/">Play</Link>
           </Button>
