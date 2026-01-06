@@ -14,13 +14,14 @@ interface UseGameControlsParams {
   difficulty: GameDifficulty
   setDifficulty: (d: GameDifficulty) => void
   newSnippet: () => void
+  resetTyping: () => void
   /** When true, Ctrl+Enter also triggers newSnippet (for results screen) */
   enableEnterShortcut?: boolean
 }
 
 /**
  * Keyboard shortcuts and cycling controls for the game.
- * Handles Ctrl/Cmd + R/L/D shortcuts.
+ * Handles Ctrl/Cmd + R/L/D and Ctrl+Backspace shortcuts.
  */
 export function useGameControls({
   lengths,
@@ -30,6 +31,7 @@ export function useGameControls({
   difficulty,
   setDifficulty,
   newSnippet,
+  resetTyping,
   enableEnterShortcut = false,
 }: UseGameControlsParams) {
   const cycleLength = useCallback(() => {
@@ -55,6 +57,10 @@ export function useGameControls({
           e.preventDefault()
           newSnippet()
           break
+        case "backspace":
+          e.preventDefault()
+          resetTyping()
+          break
         case "l":
           e.preventDefault()
           cycleLength()
@@ -74,7 +80,7 @@ export function useGameControls({
 
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [newSnippet, cycleLength, cycleDifficulty, enableEnterShortcut])
+  }, [newSnippet, resetTyping, cycleLength, cycleDifficulty, enableEnterShortcut])
 
   return { cycleLength, cycleDifficulty }
 }

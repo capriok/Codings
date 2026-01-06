@@ -20,6 +20,7 @@ export default function Page() {
     setDifficulty,
     onProgress,
     newSnippet,
+    resetTyping,
     editorKey,
   } = useGame()
 
@@ -31,6 +32,7 @@ export default function Page() {
     difficulty,
     setDifficulty,
     newSnippet,
+    resetTyping,
     enableEnterShortcut: false,
   })
 

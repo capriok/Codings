@@ -85,6 +85,20 @@ export function useGame() {
     setEditorKey((k) => k + 1)
   }, [])
 
+  // ─── Reset Typing (same snippet) ─────────────────────────────────────────
+  const resetTyping = useCallback(() => {
+    // Reset session tracking
+    resetSessionRefs(sessionRef.current)
+
+    // Reset React state (keep same prompt)
+    setTyped("")
+    setError(false)
+    setStartMs(null)
+    setLastCorrect(0)
+    setLastTotal(0)
+    setEditorKey((k) => k + 1)
+  }, [])
+
   // ─── Public Actions ──────────────────────────────────────────────────────
   const newSnippet = useCallback(() => {
     resetGame(length, difficulty)
@@ -240,5 +254,6 @@ export function useGame() {
     // Actions
     onProgress,
     newSnippet,
+    resetTyping,
   }
 }
